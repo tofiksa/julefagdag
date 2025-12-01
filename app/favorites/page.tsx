@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import type { Session } from '@prisma/client'
 import { SessionCard } from '@/components/SessionCard'
+import { FeedbackForm } from '@/components/FeedbackForm'
 import { useFavorites } from '@/hooks/useFavorites'
 import { sortSessionsByTime, groupSessionsByStatus } from '@/lib/utils'
 
@@ -12,6 +13,7 @@ export default function FavoritesPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [currentTime, setCurrentTime] = useState(new Date())
+  const [feedbackSession, setFeedbackSession] = useState<Session | null>(null)
   const { favorites, toggleFavorite } = useFavorites()
 
   useEffect(() => {
@@ -130,6 +132,12 @@ export default function FavoritesPage() {
                           currentTime={currentTime}
                           isFavorite={true}
                           onFavoriteToggle={toggleFavorite}
+                          onFeedbackClick={(sessionId) => {
+                            const session = sessions.find((s) => s.id === sessionId)
+                            if (session) {
+                              setFeedbackSession(session)
+                            }
+                          }}
                         />
                       ))}
                     </div>
@@ -150,6 +158,12 @@ export default function FavoritesPage() {
                           currentTime={currentTime}
                           isFavorite={true}
                           onFavoriteToggle={toggleFavorite}
+                          onFeedbackClick={(sessionId) => {
+                            const session = sessions.find((s) => s.id === sessionId)
+                            if (session) {
+                              setFeedbackSession(session)
+                            }
+                          }}
                         />
                       ))}
                     </div>
@@ -170,6 +184,12 @@ export default function FavoritesPage() {
                           currentTime={currentTime}
                           isFavorite={true}
                           onFavoriteToggle={toggleFavorite}
+                          onFeedbackClick={(sessionId) => {
+                            const session = sessions.find((s) => s.id === sessionId)
+                            if (session) {
+                              setFeedbackSession(session)
+                            }
+                          }}
                         />
                       ))}
                     </div>

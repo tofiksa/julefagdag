@@ -1,32 +1,42 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { cn } from '@/lib/utils'
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface FeedbackFormProps {
-  sessionId: string
-  sessionTitle: string
-  onClose: () => void
-  onSubmit: (feedback: { sessionId: string; useful: boolean; learned: boolean; explore: boolean }) => Promise<void>
+  sessionId: string;
+  sessionTitle: string;
+  onClose: () => void;
+  onSubmit: (feedback: {
+    sessionId: string;
+    useful: boolean;
+    learned: boolean;
+    explore: boolean;
+  }) => Promise<void>;
 }
 
-export function FeedbackForm({ sessionId, sessionTitle, onClose, onSubmit }: FeedbackFormProps) {
-  const [useful, setUseful] = useState<boolean | null>(null)
-  const [learned, setLearned] = useState<boolean | null>(null)
-  const [explore, setExplore] = useState<boolean | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+export function FeedbackForm({
+  sessionId,
+  sessionTitle,
+  onClose,
+  onSubmit,
+}: FeedbackFormProps) {
+  const [useful, setUseful] = useState<boolean | null>(null);
+  const [learned, setLearned] = useState<boolean | null>(null);
+  const [explore, setExplore] = useState<boolean | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (useful === null || learned === null || explore === null) {
-      setError('Vennligst svar på alle spørsmålene')
-      return
+      setError("Vennligst svar på alle spørsmålene");
+      return;
     }
 
-    setIsSubmitting(true)
-    setError(null)
+    setIsSubmitting(true);
+    setError(null);
 
     try {
       await onSubmit({
@@ -34,15 +44,15 @@ export function FeedbackForm({ sessionId, sessionTitle, onClose, onSubmit }: Fee
         useful,
         learned,
         explore,
-      })
-      onClose()
+      });
+      onClose();
     } catch (err) {
-      setError('Kunne ikke sende tilbakemelding. Prøv igjen.')
-      console.error('Error submitting feedback:', err)
+      setError("Kunne ikke sende tilbakemelding. Prøv igjen.");
+      console.error("Error submitting feedback:", err);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   const EmojiButton = ({
     value: currentValue,
@@ -50,30 +60,30 @@ export function FeedbackForm({ sessionId, sessionTitle, onClose, onSubmit }: Fee
     label,
     emoji,
   }: {
-    value: boolean | null
-    onClick: () => void
-    label: string
-    emoji: string
+    value: boolean | null;
+    onClick: () => void;
+    label: string;
+    emoji: string;
   }) => (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        'flex flex-col items-center gap-2 rounded-lg border-2 p-4 transition-all',
-        'min-h-[80px] min-w-[100px]',
-        'hover:bg-gray-50 dark:hover:bg-gray-800',
+        "flex flex-col items-center gap-2 rounded-lg border-2 p-4 transition-all",
+        "min-h-[80px] min-w-[100px]",
+        "hover:bg-gray-50 dark:hover:bg-gray-800",
         currentValue === true
-          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950'
+          ? "border-blue-500 bg-blue-50 dark:bg-blue-950"
           : currentValue === false
-            ? 'border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-800'
-            : 'border-gray-200 dark:border-gray-700'
+            ? "border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-800"
+            : "border-gray-200 dark:border-gray-700",
       )}
       aria-label={label}
     >
       <span className="text-3xl">{emoji}</span>
       <span className="text-sm font-medium">{label}</span>
     </button>
-  )
+  );
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -88,7 +98,13 @@ export function FeedbackForm({ sessionId, sessionTitle, onClose, onSubmit }: Fee
             className="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
             aria-label="Lukk"
           >
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <svg
+              className="h-6 w-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -186,12 +202,11 @@ export function FeedbackForm({ sessionId, sessionTitle, onClose, onSubmit }: Fee
               disabled={isSubmitting}
               className="flex-1 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
             >
-              {isSubmitting ? 'Sender...' : 'Send tilbakemelding'}
+              {isSubmitting ? "Sender..." : "Send tilbakemelding"}
             </button>
           </div>
         </form>
       </div>
     </div>
-  )
+  );
 }
-

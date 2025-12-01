@@ -11,7 +11,7 @@ async function main() {
   const sessions = [
     {
       title: 'Lunsj',
-      speaker: '',
+      speaker: null,
       room: 'Sal 1 & Sal 2',
       startTime: new Date('2025-12-13T11:00:00'),
       endTime: new Date('2025-12-13T12:00:00'),
@@ -75,7 +75,7 @@ async function main() {
     },
     {
       title: 'Hvordan lage et programmeringsspråk som kjører på JVM-en',
-      speaker: '',
+      speaker: null,
       room: 'Sal 2 (breakout)',
       startTime: new Date('2025-12-13T14:25:00'),
       endTime: new Date('2025-12-13T14:45:00'),
@@ -131,7 +131,7 @@ async function main() {
     },
     {
       title: 'Avslutning på dagsprogrammet',
-      speaker: '',
+      speaker: null,
       room: 'Sal 1 (felles)',
       startTime: new Date('2025-12-13T16:45:00'),
       endTime: new Date('2025-12-13T17:00:00'),

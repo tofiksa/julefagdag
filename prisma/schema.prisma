@@ -13,7 +13,7 @@ datasource db {
 model Session {
   id          String     @id @default(cuid())
   title       String
-  speaker     String
+  speaker     String?
   room        String
   startTime   DateTime
   endTime     DateTime

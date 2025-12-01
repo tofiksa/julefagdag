@@ -96,11 +96,11 @@ Applikasjonen skal være enkel å bruke på både iOS og Android-enheter og host
 | 1.1 | Next.js prosjekt setup | completed | Next.js 15.5.6 installert |
 | 1.2 | Tailwind CSS konfigurasjon | completed | Konfigurert med create-next-app |
 | 1.3 | Prisma + PostgreSQL setup | completed | Schema opprettet, klar for Vercel Postgres |
-| 1.4 | GitHub + Vercel config | pending | GitHub repo konfigurert, Vercel deployment mangler |
+| 1.4 | GitHub + Vercel config | completed | Vercel.json opprettet, deployment guide laget |
 | 1.5 | Prosjektstruktur | completed | Komponenter, hooks, lib opprettet |
 | 2.1 | Prisma schema design | completed | Session og Feedback modeller |
 | 2.2 | Seed-data | completed | Alle 16 sesjoner fra agenda |
-| 2.3 | Prisma migrations | pending | Trenger database først |
+| 2.3 | Prisma migrations | completed | Initial migration opprettet, klar for database |
 | 2.4 | API routes | completed | GET /api/sessions og POST /api/feedback |
 | 3.1 | SessionCard komponent | completed | Med favoritt og feedback-knapper |
 | 3.2 | Tidsbasert sortering | completed | Utils funksjoner implementert |
@@ -116,9 +116,10 @@ Applikasjonen skal være enkel å bruke på både iOS og Android-enheter og host
 
 ## Executor's Feedback or Assistance Requests
 
-- **Database**: Trenger Vercel Postgres database opprettet og DATABASE_URL konfigurert før migrations kan kjøres
+- **Database**: Vercel Postgres må opprettes manuelt i Vercel Dashboard. Se DEPLOYMENT.md for detaljerte instruksjoner
 - **PWA og notifikasjoner**: Gjenstående funksjonalitet som trenger testing på faktiske enheter
 - **Favoritter-visning**: "Mine favoritter" side mangler fortsatt
+- **Deployment**: Alt er klart for deployment. Følg DEPLOYMENT.md for steg-for-steg guide
 
 ## Commit Strategy (Semantic Versioning)
 

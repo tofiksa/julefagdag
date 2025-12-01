@@ -83,11 +83,12 @@ export function FeedbackForm({ sessionId, sessionTitle, onClose, onSubmit }: Fee
             Gi tilbakemelding
           </h2>
           <button
+            type="button"
             onClick={onClose}
             className="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
             aria-label="Lukk"
           >
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -105,9 +106,9 @@ export function FeedbackForm({ sessionId, sessionTitle, onClose, onSubmit }: Fee
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Question 1: Useful */}
           <div>
-            <label className="mb-3 block text-sm font-medium text-gray-900 dark:text-gray-100">
+            <div className="mb-3 block text-sm font-medium text-gray-900 dark:text-gray-100">
               Var dette nyttig?
-            </label>
+            </div>
             <div className="flex gap-4">
               <EmojiButton
                 value={useful === true ? true : null}
@@ -126,9 +127,9 @@ export function FeedbackForm({ sessionId, sessionTitle, onClose, onSubmit }: Fee
 
           {/* Question 2: Learned */}
           <div>
-            <label className="mb-3 block text-sm font-medium text-gray-900 dark:text-gray-100">
+            <div className="mb-3 block text-sm font-medium text-gray-900 dark:text-gray-100">
               Lærte du noe nytt?
-            </label>
+            </div>
             <div className="flex gap-4">
               <EmojiButton
                 value={learned === true ? true : null}
@@ -147,9 +148,9 @@ export function FeedbackForm({ sessionId, sessionTitle, onClose, onSubmit }: Fee
 
           {/* Question 3: Explore */}
           <div>
-            <label className="mb-3 block text-sm font-medium text-gray-900 dark:text-gray-100">
+            <div className="mb-3 block text-sm font-medium text-gray-900 dark:text-gray-100">
               Kunne du tenke deg å utforske dette temaet selv?
-            </label>
+            </div>
             <div className="flex gap-4">
               <EmojiButton
                 value={explore === true ? true : null}

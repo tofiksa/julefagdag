@@ -111,7 +111,7 @@ Applikasjonen skal være enkel å bruke på både iOS og Android-enheter og host
 | 6.1 | FeedbackForm komponent | completed | Tre spørsmål med emoji-inputs |
 | 6.2 | Emoji-basert input | completed | Thumbs up/down |
 | 6.3 | API endpoint feedback | completed | POST /api/feedback |
-| 7.1 | Mobile-optimalisering | in_progress | Komponenter er mobile-first, men kan forbedres |
+| 7.1 | Mobile-optimalisering | completed | Alle komponenter optimalisert for <640px skjermer |
 | 7.2 | Touch-friendly | completed | Min 44x44px knapper |
 
 ## Executor's Feedback or Assistance Requests

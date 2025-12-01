@@ -63,9 +63,9 @@ Applikasjonen skal være enkel å bruke på både iOS og Android-enheter og host
 - [ ] 4.4: Implementer varsel-logikk (10 minutter før start)
 
 ### Fase 5: Notifikasjonssystem
-- [ ] 5.1: Sett opp PWA manifest og Service Worker
-- [ ] 5.2: Implementer Web Push API eller PWA notifications
-- [ ] 5.3: Opprett varsel-komponent som viser rom, tittel og minutter igjen
+- [x] 5.1: Sett opp PWA manifest og Service Worker
+- [x] 5.2: Implementer Web Push API eller PWA notifications
+- [x] 5.3: Opprett varsel-komponent som viser rom, tittel og minutter igjen
 - [ ] 5.4: Test notifikasjoner på iOS og Android
 
 ### Fase 6: Tilbakemeldingssystem
@@ -113,6 +113,10 @@ Applikasjonen skal være enkel å bruke på både iOS og Android-enheter og host
 | 6.3 | API endpoint feedback | completed | POST /api/feedback |
 | 7.1 | Mobile-optimalisering | completed | Alle komponenter optimalisert for <640px skjermer |
 | 7.2 | Touch-friendly | completed | Min 44x44px knapper |
+| 5.1 | PWA manifest | completed | manifest.json opprettet med ikoner og metadata |
+| 5.2 | Service Worker | completed | Service Worker for offline og notifikasjoner |
+| 5.3 | Notifikasjonslogikk | completed | useNotifications hook med 10-min varsel |
+| 5.4 | Varsel-komponent | completed | NotificationBanner viser kommende favoritter |
 
 ## Executor's Feedback or Assistance Requests
 

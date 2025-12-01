@@ -200,6 +200,27 @@ export default function FavoritesPage() {
           </>
         )}
       </main>
+
+      {feedbackSession && (
+        <FeedbackForm
+          sessionId={feedbackSession.id}
+          sessionTitle={feedbackSession.title || 'Ingen tittel'}
+          onClose={() => setFeedbackSession(null)}
+          onSubmit={async (feedback) => {
+            const response = await fetch('/api/feedback', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(feedback),
+            })
+
+            if (!response.ok) {
+              throw new Error('Kunne ikke sende tilbakemelding')
+            }
+          }}
+        />
+      )}
     </div>
   )
 }

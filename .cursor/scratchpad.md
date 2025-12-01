@@ -93,15 +93,32 @@ Applikasjonen skal være enkel å bruke på både iOS og Android-enheter og host
 
 | Task ID | Description | Status | Notes |
 |---------|-------------|--------|-------|
-| 1.1 | Next.js prosjekt setup | pending | - |
-| 1.2 | Tailwind CSS konfigurasjon | pending | - |
-| 1.3 | Prisma + PostgreSQL setup | pending | - |
-| 1.4 | GitHub + Vercel config | pending | - |
-| 1.5 | Prosjektstruktur | pending | - |
+| 1.1 | Next.js prosjekt setup | completed | Next.js 15.5.6 installert |
+| 1.2 | Tailwind CSS konfigurasjon | completed | Konfigurert med create-next-app |
+| 1.3 | Prisma + PostgreSQL setup | completed | Schema opprettet, klar for Vercel Postgres |
+| 1.4 | GitHub + Vercel config | pending | GitHub repo konfigurert, Vercel deployment mangler |
+| 1.5 | Prosjektstruktur | completed | Komponenter, hooks, lib opprettet |
+| 2.1 | Prisma schema design | completed | Session og Feedback modeller |
+| 2.2 | Seed-data | completed | Alle 16 sesjoner fra agenda |
+| 2.3 | Prisma migrations | pending | Trenger database først |
+| 2.4 | API routes | completed | GET /api/sessions og POST /api/feedback |
+| 3.1 | SessionCard komponent | completed | Med favoritt og feedback-knapper |
+| 3.2 | Tidsbasert sortering | completed | Utils funksjoner implementert |
+| 3.3 | AgendaList komponent | completed | Nå/Kommende/Ferdig seksjoner |
+| 3.4 | Real-time oppdatering | completed | Oppdaterer hvert minutt |
+| 4.1 | Favoritt-state | completed | localStorage-basert |
+| 4.2 | Favoritt-knapp | completed | Integrert i SessionCard |
+| 6.1 | FeedbackForm komponent | completed | Tre spørsmål med emoji-inputs |
+| 6.2 | Emoji-basert input | completed | Thumbs up/down |
+| 6.3 | API endpoint feedback | completed | POST /api/feedback |
+| 7.1 | Mobile-optimalisering | in_progress | Komponenter er mobile-first, men kan forbedres |
+| 7.2 | Touch-friendly | completed | Min 44x44px knapper |
 
 ## Executor's Feedback or Assistance Requests
 
-_Ingen blokkeringer ennå - venter på start av implementering_
+- **Database**: Trenger Vercel Postgres database opprettet og DATABASE_URL konfigurert før migrations kan kjøres
+- **PWA og notifikasjoner**: Gjenstående funksjonalitet som trenger testing på faktiske enheter
+- **Favoritter-visning**: "Mine favoritter" side mangler fortsatt
 
 ## Commit Strategy (Semantic Versioning)
 

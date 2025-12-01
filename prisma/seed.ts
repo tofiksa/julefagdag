@@ -9,6 +9,15 @@ async function main() {
 
   // Create sessions based on Julefagdag 2025 agenda
   const sessions = [
+    // Test session for feedback functionality - completed session
+    {
+      title: '🧪 Test Foredrag - Tilbakemelding',
+      speaker: 'Test Speaker',
+      room: 'Test Rom',
+      startTime: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
+      endTime: new Date(Date.now() - 1 * 60 * 60 * 1000), // 1 hour ago
+      description: 'Dette er et test-foredrag for å teste tilbakemeldingsfunksjonaliteten. Du kan gi tilbakemelding på dette foredraget.',
+    },
     {
       title: 'Lunsj',
       speaker: null,

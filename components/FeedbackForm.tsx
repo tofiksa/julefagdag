@@ -176,7 +176,7 @@ export function FeedbackForm({
                 emoji="👍"
               />
               <EmojiButton
-                value={explore === false ? false : null}
+                value={explore === false ? true : null}
                 onClick={() => setExplore(false)}
                 label="Nei"
                 emoji="👎"

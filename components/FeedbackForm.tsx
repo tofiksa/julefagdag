@@ -110,13 +110,13 @@ export function FeedbackForm({ sessionId, sessionTitle, onClose, onSubmit }: Fee
             </label>
             <div className="flex gap-4">
               <EmojiButton
-                value={useful}
+                value={useful === true ? true : null}
                 onClick={() => setUseful(true)}
                 label="Ja"
                 emoji="👍"
               />
               <EmojiButton
-                value={useful === false}
+                value={useful === false ? false : null}
                 onClick={() => setUseful(false)}
                 label="Nei"
                 emoji="👎"
@@ -131,13 +131,13 @@ export function FeedbackForm({ sessionId, sessionTitle, onClose, onSubmit }: Fee
             </label>
             <div className="flex gap-4">
               <EmojiButton
-                value={learned}
+                value={learned === true ? true : null}
                 onClick={() => setLearned(true)}
                 label="Ja"
                 emoji="👍"
               />
               <EmojiButton
-                value={learned === false}
+                value={learned === false ? false : null}
                 onClick={() => setLearned(false)}
                 label="Nei"
                 emoji="👎"
@@ -152,13 +152,13 @@ export function FeedbackForm({ sessionId, sessionTitle, onClose, onSubmit }: Fee
             </label>
             <div className="flex gap-4">
               <EmojiButton
-                value={explore}
+                value={explore === true ? true : null}
                 onClick={() => setExplore(true)}
                 label="Ja"
                 emoji="👍"
               />
               <EmojiButton
-                value={explore === false}
+                value={explore === false ? false : null}
                 onClick={() => setExplore(false)}
                 label="Nei"
                 emoji="👎"

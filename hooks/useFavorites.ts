@@ -4,20 +4,48 @@ import { useState, useEffect, useCallback } from 'react'
 
 const FAVORITES_KEY = 'julefagdag-favorites'
 
-export function useFavorites() {
-  const [favorites, setFavorites] = useState<string[]>([])
+function getFavoritesFromStorage(): string[] {
+  if (typeof window === 'undefined') return []
+  try {
+    const stored = localStorage.getItem(FAVORITES_KEY)
+    return stored ? JSON.parse(stored) : []
+  } catch (error) {
+    console.error('Error loading favorites:', error)
+    return []
+  }
+}
 
-  // Load favorites from localStorage on mount
+export function useFavorites() {
+  const [favorites, setFavorites] = useState<string[]>(() => getFavoritesFromStorage())
+
+  // Load favorites from localStorage on mount and listen for changes
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem(FAVORITES_KEY)
-      if (stored) {
-        try {
-          setFavorites(JSON.parse(stored))
-        } catch (error) {
-          console.error('Error loading favorites:', error)
-        }
+    if (typeof window === 'undefined') return
+
+    // Load initial favorites
+    const stored = getFavoritesFromStorage()
+    setFavorites(stored)
+
+    // Listen for storage events (changes from other tabs/windows)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === FAVORITES_KEY) {
+        const newFavorites = e.newValue ? JSON.parse(e.newValue) : []
+        setFavorites(newFavorites)
       }
+    }
+
+    // Listen for custom event (changes from same tab)
+    const handleCustomStorageChange = () => {
+      const stored = getFavoritesFromStorage()
+      setFavorites(stored)
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    window.addEventListener('favorites-changed', handleCustomStorageChange)
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('favorites-changed', handleCustomStorageChange)
     }
   }, [])
 
@@ -25,6 +53,8 @@ export function useFavorites() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites))
+      // Dispatch custom event to notify other components in the same tab
+      window.dispatchEvent(new Event('favorites-changed'))
     }
   }, [favorites])
 

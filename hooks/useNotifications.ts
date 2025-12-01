@@ -47,15 +47,16 @@ function showNotification(data: NotificationData) {
     navigator.serviceWorker.ready.then((registration) => {
       registration.showNotification(data.title, {
         body,
-      icon: '/icon-192.svg',
-      badge: '/icon-192.svg',
-        vibrate: [200, 100, 200],
+        icon: '/icon-192.svg',
+        badge: '/icon-192.svg',
         tag: `session-${data.sessionId}`,
         data: {
           url: '/',
           sessionId: data.sessionId,
         },
         requireInteraction: false,
+        // @ts-expect-error - vibrate is supported in browsers but not in TypeScript types
+        vibrate: [200, 100, 200],
       })
     })
   } else {

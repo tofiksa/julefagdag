@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Enable PWA support
+  // Service Worker will be registered client-side
 };
 
 export default nextConfig;

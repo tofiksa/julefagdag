@@ -81,7 +81,7 @@ export default function Home() {
               aria-label={`Favoritter${favorites.length > 0 ? ` (${favorites.length})` : ''}`}
             >
               <svg
-                className="h-5 w-5 flex-shrink-0"
+                className="h-5 w-5 shrink-0"
                 fill={favorites.length > 0 ? 'currentColor' : 'none'}
                 stroke="currentColor"
                 viewBox="0 0 24 24"

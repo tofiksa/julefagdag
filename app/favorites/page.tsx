@@ -11,6 +11,7 @@ export default function FavoritesPage() {
   const [sessions, setSessions] = useState<Session[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [currentTime, setCurrentTime] = useState(new Date())
   const { favorites, toggleFavorite } = useFavorites()
 
   useEffect(() => {
@@ -32,13 +33,22 @@ export default function FavoritesPage() {
     fetchSessions()
   }, [])
 
+  // Update current time every minute
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 60000) // Update every minute
+
+    return () => clearInterval(interval)
+  }, [])
+
   // Filter sessions to only show favorites
   const favoriteSessions = sessions.filter((session) =>
     favorites.includes(session.id)
   )
 
-  const sortedFavorites = sortSessionsByTime(favoriteSessions)
-  const { current, upcoming, completed } = groupSessionsByStatus(sortedFavorites)
+  const sortedFavorites = sortSessionsByTime(favoriteSessions, currentTime)
+  const { current, upcoming, completed } = groupSessionsByStatus(sortedFavorites, currentTime)
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -117,6 +127,7 @@ export default function FavoritesPage() {
                         <SessionCard
                           key={session.id}
                           session={session}
+                          currentTime={currentTime}
                           isFavorite={true}
                           onFavoriteToggle={toggleFavorite}
                         />
@@ -136,6 +147,7 @@ export default function FavoritesPage() {
                         <SessionCard
                           key={session.id}
                           session={session}
+                          currentTime={currentTime}
                           isFavorite={true}
                           onFavoriteToggle={toggleFavorite}
                         />
@@ -155,6 +167,7 @@ export default function FavoritesPage() {
                         <SessionCard
                           key={session.id}
                           session={session}
+                          currentTime={currentTime}
                           isFavorite={true}
                           onFavoriteToggle={toggleFavorite}
                         />

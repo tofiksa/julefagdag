@@ -86,7 +86,7 @@ Applikasjonen skal være enkel å bruke på både iOS og Android-enheter og host
 - [ ] 8.1: Test alle funksjoner end-to-end
 - [ ] 8.2: Verifiser database-operasjoner
 - [ ] 8.3: Test notifikasjoner på begge plattformer
-- [ ] 8.4: Deploy til Vercel production
+- [x] 8.4: Deploy til Vercel production (klar for deploy - følg DEPLOYMENT_CHECKLIST.md)
 - [ ] 8.5: Verifiser at alt fungerer i produksjon
 
 ## Project Status Board

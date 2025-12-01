@@ -116,17 +116,17 @@ export function FeedbackForm({
           </button>
         </div>
 
-        <p className="mb-6 text-sm text-gray-600 dark:text-gray-400">
+        <p className="mb-4 text-sm text-gray-600 dark:text-gray-400 break-words sm:mb-6">
           {sessionTitle}
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           {/* Question 1: Useful */}
           <div>
             <div className="mb-3 block text-sm font-medium text-gray-900 dark:text-gray-100">
               Var dette nyttig?
             </div>
-            <div className="flex gap-4">
+            <div className="flex gap-3 sm:gap-4">
               <EmojiButton
                 value={useful === true ? true : null}
                 onClick={() => setUseful(true)}
@@ -147,7 +147,7 @@ export function FeedbackForm({
             <div className="mb-3 block text-sm font-medium text-gray-900 dark:text-gray-100">
               Lærte du noe nytt?
             </div>
-            <div className="flex gap-4">
+            <div className="flex gap-3 sm:gap-4">
               <EmojiButton
                 value={learned === true ? true : null}
                 onClick={() => setLearned(true)}
@@ -168,7 +168,7 @@ export function FeedbackForm({
             <div className="mb-3 block text-sm font-medium text-gray-900 dark:text-gray-100">
               Kunne du tenke deg å utforske dette temaet selv?
             </div>
-            <div className="flex gap-4">
+            <div className="flex gap-3 sm:gap-4">
               <EmojiButton
                 value={explore === true ? true : null}
                 onClick={() => setExplore(true)}

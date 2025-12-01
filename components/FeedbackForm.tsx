@@ -75,9 +75,7 @@ export function FeedbackForm({
         "sm:gap-2 sm:p-4 sm:min-w-[100px] sm:flex-none",
         currentValue === true
           ? "border-blue-500 bg-blue-50 dark:bg-blue-950"
-          : currentValue === false
-            ? "border-gray-300 bg-gray-50 dark:border-gray-600 dark:bg-gray-800"
-            : "border-gray-200 dark:border-gray-700",
+          : "border-gray-200 dark:border-gray-700",
       )}
       aria-label={label}
     >

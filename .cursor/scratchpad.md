@@ -69,16 +69,16 @@ Applikasjonen skal være enkel å bruke på både iOS og Android-enheter og host
 - [ ] 5.4: Test notifikasjoner på iOS og Android
 
 ### Fase 6: Tilbakemeldingssystem
-- [ ] 6.1: Opprett FeedbackForm komponent med tre spørsmål
-- [ ] 6.2: Implementer emoji-basert input (thumbs up/down)
-- [ ] 6.3: Opprett API endpoint for å lagre tilbakemeldinger
-- [ ] 6.4: Legg til visuell feedback når tilbakemelding er sendt
-- [ ] 6.5: Implementer validering og feilhåndtering
+- [x] 6.1: Opprett FeedbackForm komponent med tre spørsmål
+- [x] 6.2: Implementer emoji-basert input (thumbs up/down)
+- [x] 6.3: Opprett API endpoint for å lagre tilbakemeldinger
+- [x] 6.4: Legg til visuell feedback når tilbakemelding er sendt
+- [x] 6.5: Implementer validering og feilhåndtering
 
 ### Fase 7: Mobile-optimalisering og PWA
-- [ ] 7.1: Optimaliser layout for små skjermer (< 640px)
-- [ ] 7.2: Implementer touch-friendly interaksjoner
-- [ ] 7.3: Legg til offline-støtte via Service Worker
+- [x] 7.1: Optimaliser layout for små skjermer (< 640px)
+- [x] 7.2: Implementer touch-friendly interaksjoner
+- [x] 7.3: Legg til offline-støtte via Service Worker
 - [ ] 7.4: Test på faktiske iOS og Android-enheter
 - [ ] 7.5: Optimaliser ytelse og lastetider
 

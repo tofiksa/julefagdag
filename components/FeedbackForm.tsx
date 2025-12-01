@@ -26,6 +26,7 @@ export function FeedbackForm({
   const [explore, setExplore] = useState<boolean | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,6 +38,7 @@ export function FeedbackForm({
 
     setIsSubmitting(true);
     setError(null);
+    setIsSuccess(false);
 
     try {
       await onSubmit({
@@ -45,11 +47,14 @@ export function FeedbackForm({
         learned,
         explore,
       });
-      onClose();
+      setIsSuccess(true);
+      // Close form after 2 seconds to show success message
+      setTimeout(() => {
+        onClose();
+      }, 2000);
     } catch (err) {
       setError("Kunne ikke sende tilbakemelding. Prøv igjen.");
       console.error("Error submitting feedback:", err);
-    } finally {
       setIsSubmitting(false);
     }
   };

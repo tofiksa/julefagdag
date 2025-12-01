@@ -6,6 +6,7 @@ import type { Session } from '@prisma/client'
 import { SessionCard } from '@/components/SessionCard'
 import { FeedbackForm } from '@/components/FeedbackForm'
 import { useFavorites } from '@/hooks/useFavorites'
+import { useFeedback } from '@/hooks/useFeedback'
 import { sortSessionsByTime, groupSessionsByStatus } from '@/lib/utils'
 
 export default function FavoritesPage() {
@@ -15,6 +16,7 @@ export default function FavoritesPage() {
   const [currentTime, setCurrentTime] = useState(new Date())
   const [feedbackSession, setFeedbackSession] = useState<Session | null>(null)
   const { favorites, toggleFavorite } = useFavorites()
+  const { hasSubmittedFeedback, markAsSubmitted } = useFeedback()
 
   useEffect(() => {
     async function fetchSessions() {
@@ -131,10 +133,11 @@ export default function FavoritesPage() {
                           session={session}
                           currentTime={currentTime}
                           isFavorite={true}
+                          hasSubmittedFeedback={hasSubmittedFeedback(session.id)}
                           onFavoriteToggle={toggleFavorite}
                           onFeedbackClick={(sessionId) => {
                             const session = sessions.find((s) => s.id === sessionId)
-                            if (session) {
+                            if (session && !hasSubmittedFeedback(sessionId)) {
                               setFeedbackSession(session)
                             }
                           }}
@@ -157,10 +160,11 @@ export default function FavoritesPage() {
                           session={session}
                           currentTime={currentTime}
                           isFavorite={true}
+                          hasSubmittedFeedback={hasSubmittedFeedback(session.id)}
                           onFavoriteToggle={toggleFavorite}
                           onFeedbackClick={(sessionId) => {
                             const session = sessions.find((s) => s.id === sessionId)
-                            if (session) {
+                            if (session && !hasSubmittedFeedback(sessionId)) {
                               setFeedbackSession(session)
                             }
                           }}
@@ -183,10 +187,11 @@ export default function FavoritesPage() {
                           session={session}
                           currentTime={currentTime}
                           isFavorite={true}
+                          hasSubmittedFeedback={hasSubmittedFeedback(session.id)}
                           onFavoriteToggle={toggleFavorite}
                           onFeedbackClick={(sessionId) => {
                             const session = sessions.find((s) => s.id === sessionId)
-                            if (session) {
+                            if (session && !hasSubmittedFeedback(sessionId)) {
                               setFeedbackSession(session)
                             }
                           }}
@@ -218,6 +223,9 @@ export default function FavoritesPage() {
             if (!response.ok) {
               throw new Error('Kunne ikke sende tilbakemelding')
             }
+
+            // Mark as submitted after successful submission
+            markAsSubmitted(feedback.sessionId)
           }}
         />
       )}

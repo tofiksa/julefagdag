@@ -11,6 +11,7 @@ interface AgendaListProps {
   onFavoriteToggle?: (sessionId: string) => void
   onFeedbackClick?: (sessionId: string) => void
   currentTime?: Date
+  hasSubmittedFeedback?: (sessionId: string) => boolean
 }
 
 export function AgendaList({
@@ -19,6 +20,7 @@ export function AgendaList({
   onFavoriteToggle,
   onFeedbackClick,
   currentTime = new Date(),
+  hasSubmittedFeedback,
 }: AgendaListProps) {
 
   const sortedSessions = sortSessionsByTime(sessions, currentTime)
@@ -33,16 +35,17 @@ export function AgendaList({
             Nå pågår
           </h2>
           <div className="space-y-3 sm:space-y-4">
-            {current.map((session) => (
-              <SessionCard
-                key={session.id}
-                session={session}
-                currentTime={currentTime}
-                isFavorite={favorites.includes(session.id)}
-                onFavoriteToggle={onFavoriteToggle}
-                onFeedbackClick={onFeedbackClick}
-              />
-            ))}
+                      {current.map((session) => (
+                        <SessionCard
+                          key={session.id}
+                          session={session}
+                          currentTime={currentTime}
+                          isFavorite={favorites.includes(session.id)}
+                          hasSubmittedFeedback={hasSubmittedFeedback?.(session.id) ?? false}
+                          onFavoriteToggle={onFavoriteToggle}
+                          onFeedbackClick={onFeedbackClick}
+                        />
+                      ))}
           </div>
         </section>
       )}
@@ -54,16 +57,17 @@ export function AgendaList({
             Kommende
           </h2>
           <div className="space-y-3 sm:space-y-4">
-            {upcoming.map((session) => (
-              <SessionCard
-                key={session.id}
-                session={session}
-                currentTime={currentTime}
-                isFavorite={favorites.includes(session.id)}
-                onFavoriteToggle={onFavoriteToggle}
-                onFeedbackClick={onFeedbackClick}
-              />
-            ))}
+                      {upcoming.map((session) => (
+                        <SessionCard
+                          key={session.id}
+                          session={session}
+                          currentTime={currentTime}
+                          isFavorite={favorites.includes(session.id)}
+                          hasSubmittedFeedback={hasSubmittedFeedback?.(session.id) ?? false}
+                          onFavoriteToggle={onFavoriteToggle}
+                          onFeedbackClick={onFeedbackClick}
+                        />
+                      ))}
           </div>
         </section>
       )}
@@ -75,16 +79,17 @@ export function AgendaList({
             Ferdig
           </h2>
           <div className="space-y-3 sm:space-y-4">
-            {completed.map((session) => (
-              <SessionCard
-                key={session.id}
-                session={session}
-                currentTime={currentTime}
-                isFavorite={favorites.includes(session.id)}
-                onFavoriteToggle={onFavoriteToggle}
-                onFeedbackClick={onFeedbackClick}
-              />
-            ))}
+                      {completed.map((session) => (
+                        <SessionCard
+                          key={session.id}
+                          session={session}
+                          currentTime={currentTime}
+                          isFavorite={favorites.includes(session.id)}
+                          hasSubmittedFeedback={hasSubmittedFeedback?.(session.id) ?? false}
+                          onFavoriteToggle={onFavoriteToggle}
+                          onFeedbackClick={onFeedbackClick}
+                        />
+                      ))}
           </div>
         </section>
       )}

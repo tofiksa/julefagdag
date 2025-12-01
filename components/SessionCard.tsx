@@ -5,6 +5,7 @@ interface SessionCardProps {
   session: Session
   currentTime?: Date
   isFavorite?: boolean
+  hasSubmittedFeedback?: boolean
   onFavoriteToggle?: (sessionId: string) => void
   onFeedbackClick?: (sessionId: string) => void
 }
@@ -13,6 +14,7 @@ export function SessionCard({
   session,
   currentTime = new Date(),
   isFavorite = false,
+  hasSubmittedFeedback = false,
   onFavoriteToggle,
   onFeedbackClick,
 }: SessionCardProps) {
@@ -96,31 +98,50 @@ export function SessionCard({
           )}
 
           {onFeedbackClick && status !== 'upcoming' && (
-            <button
-              onClick={() => onFeedbackClick(session.id)}
-              className={cn(
-                'rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                'hover:bg-blue-50 dark:hover:bg-blue-900/20',
-                'min-h-[44px]',
-                'text-blue-600 border border-blue-200 dark:text-blue-400 dark:border-blue-700',
-                'hover:border-blue-300 hover:bg-blue-50 dark:hover:border-blue-600',
-                'sm:px-4'
+            <>
+              {hasSubmittedFeedback ? (
+                <div
+                  className={cn(
+                    'rounded-lg px-3 py-2 text-sm font-medium',
+                    'min-h-[44px] flex items-center justify-center',
+                    'text-green-600 border border-green-200 bg-green-50 dark:text-green-400 dark:border-green-700 dark:bg-green-900/20',
+                    'sm:px-4'
+                  )}
+                >
+                  <span className="flex items-center gap-1.5">
+                    <span className="text-base">😊</span>
+                    <span className="hidden sm:inline">Tilbakemelding sendt</span>
+                    <span className="sm:hidden">Sendt</span>
+                  </span>
+                </div>
+              ) : (
+                <button
+                  onClick={() => onFeedbackClick(session.id)}
+                  className={cn(
+                    'rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                    'hover:bg-blue-50 dark:hover:bg-blue-900/20',
+                    'min-h-[44px]',
+                    'text-blue-600 border border-blue-200 dark:text-blue-400 dark:border-blue-700',
+                    'hover:border-blue-300 hover:bg-blue-50 dark:hover:border-blue-600',
+                    'sm:px-4'
+                  )}
+                  aria-label="Gi tilbakemelding"
+                >
+                  <span className="flex items-center gap-1.5">
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+                      />
+                    </svg>
+                    <span className="hidden sm:inline">Gi tilbakemelding</span>
+                    <span className="sm:hidden">Tilbakemelding</span>
+                  </span>
+                </button>
               )}
-              aria-label="Gi tilbakemelding"
-            >
-              <span className="flex items-center gap-1.5">
-                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
-                  />
-                </svg>
-                <span className="hidden sm:inline">Gi tilbakemelding</span>
-                <span className="sm:hidden">Tilbakemelding</span>
-              </span>
-            </button>
+            </>
           )}
         </div>
       </div>

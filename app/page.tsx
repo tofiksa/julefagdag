@@ -7,6 +7,7 @@ import { AgendaList } from '@/components/AgendaList'
 import { FeedbackForm } from '@/components/FeedbackForm'
 import { NotificationBanner } from '@/components/NotificationBanner'
 import { useFavorites } from '@/hooks/useFavorites'
+import { useFeedback } from '@/hooks/useFeedback'
 import { useNotifications } from '@/hooks/useNotifications'
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
   const [feedbackSession, setFeedbackSession] = useState<Session | null>(null)
   const [currentTime, setCurrentTime] = useState(new Date())
   const { favorites, toggleFavorite, isFavorite } = useFavorites()
+  const { hasSubmittedFeedback, markAsSubmitted } = useFeedback()
   
   // Update current time every minute
   useEffect(() => {
@@ -65,6 +67,9 @@ export default function Home() {
     if (!response.ok) {
       throw new Error('Kunne ikke sende tilbakemelding')
     }
+
+    // Mark as submitted after successful submission
+    markAsSubmitted(feedback.sessionId)
   }
 
   return (
@@ -124,10 +129,11 @@ export default function Home() {
               sessions={sessions}
               favorites={favorites}
               currentTime={currentTime}
+              hasSubmittedFeedback={hasSubmittedFeedback}
               onFavoriteToggle={toggleFavorite}
               onFeedbackClick={(sessionId) => {
                 const session = sessions.find((s) => s.id === sessionId)
-                if (session) {
+                if (session && !hasSubmittedFeedback(sessionId)) {
                   setFeedbackSession(session)
                 }
               }}

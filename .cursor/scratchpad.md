@@ -117,6 +117,10 @@ Applikasjonen skal være enkel å bruke på både iOS og Android-enheter og host
 | 5.2 | Service Worker | completed | Service Worker for offline og notifikasjoner |
 | 5.3 | Notifikasjonslogikk | completed | useNotifications hook med 10-min varsel |
 | 5.4 | Varsel-komponent | completed | NotificationBanner viser kommende favoritter |
+| 4.3 | Favoritter-visning | completed | "Mine favoritter" side implementert |
+| 4.4 | Varsel-logikk | completed | 10-minutter varsel implementert |
+| 6.4 | Visuell feedback | completed | Suksessmelding med smilefjes |
+| 6.5 | Validering | completed | Én tilbakemelding per sesjon |
 
 ## Executor's Feedback or Assistance Requests
 

@@ -5,14 +5,29 @@ import Link from 'next/link'
 import type { Session } from '@prisma/client'
 import { AgendaList } from '@/components/AgendaList'
 import { FeedbackForm } from '@/components/FeedbackForm'
+import { NotificationBanner } from '@/components/NotificationBanner'
 import { useFavorites } from '@/hooks/useFavorites'
+import { useNotifications } from '@/hooks/useNotifications'
 
 export default function Home() {
   const [sessions, setSessions] = useState<Session[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [feedbackSession, setFeedbackSession] = useState<Session | null>(null)
+  const [currentTime, setCurrentTime] = useState(new Date())
   const { favorites, toggleFavorite, isFavorite } = useFavorites()
+  
+  // Update current time every minute
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 60000) // Update every minute
+
+    return () => clearInterval(interval)
+  }, [])
+
+  // Set up notifications
+  useNotifications(sessions, currentTime)
 
   useEffect(() => {
     async function fetchSessions() {
@@ -103,17 +118,20 @@ export default function Home() {
         )}
 
         {!loading && !error && (
-          <AgendaList
-            sessions={sessions}
-            favorites={favorites}
-            onFavoriteToggle={toggleFavorite}
-            onFeedbackClick={(sessionId) => {
-              const session = sessions.find((s) => s.id === sessionId)
-              if (session) {
-                setFeedbackSession(session)
-              }
-            }}
-          />
+          <>
+            <NotificationBanner sessions={sessions} currentTime={currentTime} />
+            <AgendaList
+              sessions={sessions}
+              favorites={favorites}
+              onFavoriteToggle={toggleFavorite}
+              onFeedbackClick={(sessionId) => {
+                const session = sessions.find((s) => s.id === sessionId)
+                if (session) {
+                  setFeedbackSession(session)
+                }
+              }}
+            />
+          </>
         )}
       </main>
 

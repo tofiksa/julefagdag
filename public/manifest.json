@@ -1,0 +1,27 @@
+{
+  "name": "SPK Julefagdag 2025 - Agenda",
+  "short_name": "Julefagdag",
+  "description": "Agenda for Statens Pensjonskasse Julefagdag 2025",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "education"],
+  "screenshots": []
+}
+

@@ -1,36 +1,146 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SPK Julefagdag 2025 - Agenda Applikasjon
 
-## Getting Started
+En mobilvennlig webapplikasjon for å vise agenda for Statens Pensjonskasse Julefagdag 2025.
 
-First, run the development server:
+## Funksjoner
 
+- 📅 Dynamisk agenda organisert etter gjeldende tid (Nå/Kommende/Ferdig)
+- ⭐ Merk foredrag som favoritter
+- 🔔 Notifikasjoner 10 minutter før favorittforedrag starter
+- 💬 Gi tilbakemelding per foredrag med tre spørsmål
+- 📱 Optimalisert for mobil (iOS og Android)
+
+## Teknologi
+
+- **Next.js 15** med App Router
+- **TypeScript**
+- **Prisma** med PostgreSQL
+- **Tailwind CSS**
+- **Vercel** for hosting
+
+## Lokal utvikling
+
+### Forutsetninger
+
+- Node.js 18+ 
+- npm eller yarn
+- PostgreSQL database (eller Vercel Postgres)
+
+### Installasjon
+
+1. Klon repositoriet:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/tofiksa/julefagdag.git
+cd julefagdag
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Installer avhengigheter:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Opprett `.env` fil med database URL:
+```bash
+DATABASE_URL="postgresql://user:password@localhost:5432/julefagdag"
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Kjør Prisma migrations:
+```bash
+npx prisma migrate dev
+```
 
-## Learn More
+5. Seed database med sesjoner:
+```bash
+npm run db:seed
+```
 
-To learn more about Next.js, take a look at the following resources:
+6. Start utviklingsserveren:
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Applikasjonen vil være tilgjengelig på [http://localhost:3000](http://localhost:3000)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Vercel Deployment
 
-## Deploy on Vercel
+### Steg 1: Opprett Vercel Postgres Database
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Gå til [Vercel Dashboard](https://vercel.com/dashboard)
+2. Velg ditt prosjekt eller opprett et nytt
+3. Gå til "Storage" tab
+4. Klikk "Create Database" og velg "Postgres"
+5. Velg region (anbefalt: `iad1` for beste ytelse)
+6. Vercel vil automatisk opprette `POSTGRES_URL` environment variable
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Steg 2: Konfigurer Environment Variables
+
+I Vercel Dashboard, gå til Settings → Environment Variables og legg til:
+
+```
+DATABASE_URL=<din-postgres-url-fra-vercel>
+```
+
+Vercel Postgres bruker `POSTGRES_URL` som standard, men Prisma forventer `DATABASE_URL`. Du kan enten:
+- Bruke `POSTGRES_URL` direkte (må oppdatere Prisma config)
+- Eller kopiere `POSTGRES_URL` til `DATABASE_URL`
+
+### Steg 3: Deploy til Vercel
+
+1. Push koden til GitHub:
+```bash
+git push origin main
+```
+
+2. Vercel vil automatisk detektere Next.js-prosjektet og starte deployment
+
+3. Etter første deployment, kjør migrations:
+```bash
+# Via Vercel CLI
+vercel env pull .env.local
+npx prisma migrate deploy
+
+# Eller via Vercel Dashboard → Functions → Run migrations
+```
+
+4. Seed database (kun første gang):
+```bash
+npm run db:seed
+```
+
+### Steg 4: Konfigurer Build Settings
+
+Vercel vil automatisk:
+- Kjøre `npm install` (som kjører `postinstall` script som genererer Prisma Client)
+- Kjøre `npm run build` (som genererer Prisma Client og bygger Next.js)
+
+## Database Schema
+
+### Session
+- `id`: Unique identifier
+- `title`: Tittel på foredraget
+- `speaker`: Foredragsholder (optional)
+- `room`: Rom hvor foredraget holdes
+- `startTime`: Starttidspunkt
+- `endTime`: Sluttidspunkt
+- `description`: Beskrivelse (optional)
+
+### Feedback
+- `id`: Unique identifier
+- `sessionId`: Referanse til Session
+- `useful`: Var dette nyttig? (boolean)
+- `learned`: Lærte du noe nytt? (boolean)
+- `explore`: Kunne du tenke deg å utforske dette temaet selv? (boolean)
+- `createdAt`: Når tilbakemeldingen ble gitt
+
+## Scripts
+
+- `npm run dev` - Start utviklingsserver
+- `npm run build` - Bygg for produksjon
+- `npm run start` - Start produksjonsserver
+- `npm run lint` - Kjør linter
+- `npm run format` - Formater kode
+- `npm run db:seed` - Seed database med sesjoner
+
+## Lisens
+
+Privat prosjekt for Statens Pensjonskasse

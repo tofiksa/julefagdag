@@ -69,9 +69,10 @@ export function FeedbackForm({
       type="button"
       onClick={onClick}
       className={cn(
-        "flex flex-col items-center gap-2 rounded-lg border-2 p-4 transition-all",
-        "min-h-[80px] min-w-[100px]",
+        "flex flex-col items-center gap-1.5 rounded-lg border-2 p-3 transition-all",
+        "min-h-[80px] min-w-[90px] flex-1",
         "hover:bg-gray-50 dark:hover:bg-gray-800",
+        "sm:gap-2 sm:p-4 sm:min-w-[100px] sm:flex-none",
         currentValue === true
           ? "border-blue-500 bg-blue-50 dark:bg-blue-950"
           : currentValue === false
@@ -86,16 +87,16 @@ export function FeedbackForm({
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-gray-800">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-4">
+      <div className="w-full max-w-md rounded-lg bg-white p-4 shadow-xl dark:bg-gray-800 sm:p-6 max-h-[90vh] overflow-y-auto">
+        <div className="mb-4 flex items-center justify-between gap-2">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 sm:text-xl">
             Gi tilbakemelding
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+            className="rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-700 min-h-[44px] min-w-[44px] flex-shrink-0"
             aria-label="Lukk"
           >
             <svg
@@ -189,18 +190,18 @@ export function FeedbackForm({
             </div>
           )}
 
-          <div className="flex gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+              className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-3 font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 min-h-[44px]"
             >
               Avbryt
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
+              className="flex-1 rounded-lg bg-blue-600 px-4 py-3 font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50 min-h-[44px]"
             >
               {isSubmitting ? "Sender..." : "Send tilbakemelding"}
             </button>

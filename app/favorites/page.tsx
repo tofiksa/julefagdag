@@ -43,22 +43,23 @@ export default function FavoritesPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/80 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/80">
-        <div className="mx-auto max-w-4xl px-4 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+        <div className="mx-auto max-w-4xl px-3 py-3 sm:px-4 sm:py-4">
+          <div className="flex items-center justify-between gap-2">
+            <h1 className="text-lg font-bold text-gray-900 dark:text-gray-100 sm:text-xl md:text-2xl truncate">
               ⭐ Mine favoritter
             </h1>
             <Link
               href="/"
-              className="rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+              className="rounded-lg px-3 py-2 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 sm:px-4 sm:text-sm min-h-[44px] whitespace-nowrap"
             >
-              ← Tilbake til agenda
+              <span className="hidden sm:inline">← Tilbake til agenda</span>
+              <span className="sm:hidden">← Tilbake</span>
             </Link>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl px-4 py-8">
+      <main className="mx-auto max-w-4xl px-3 py-6 sm:px-4 sm:py-8">
         {loading && (
           <div className="flex items-center justify-center py-12">
             <div className="text-gray-600 dark:text-gray-400">Laster favoritter...</div>
@@ -104,14 +105,14 @@ export default function FavoritesPage() {
                 </Link>
               </div>
             ) : (
-              <div className="space-y-8">
+              <div className="space-y-6 sm:space-y-8">
                 {/* Current Sessions */}
                 {current.length > 0 && (
                   <section>
-                    <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-gray-100">
+                    <h2 className="mb-3 text-xl font-bold text-gray-900 dark:text-gray-100 sm:mb-4 sm:text-2xl">
                       Nå pågår ({current.length})
                     </h2>
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                       {current.map((session) => (
                         <SessionCard
                           key={session.id}
@@ -127,10 +128,10 @@ export default function FavoritesPage() {
                 {/* Upcoming Sessions */}
                 {upcoming.length > 0 && (
                   <section>
-                    <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-gray-100">
+                    <h2 className="mb-3 text-xl font-bold text-gray-900 dark:text-gray-100 sm:mb-4 sm:text-2xl">
                       Kommende ({upcoming.length})
                     </h2>
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                       {upcoming.map((session) => (
                         <SessionCard
                           key={session.id}
@@ -146,10 +147,10 @@ export default function FavoritesPage() {
                 {/* Completed Sessions */}
                 {completed.length > 0 && (
                   <section>
-                    <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-gray-100">
+                    <h2 className="mb-3 text-xl font-bold text-gray-900 dark:text-gray-100 sm:mb-4 sm:text-2xl">
                       Ferdig ({completed.length})
                     </h2>
-                    <div className="space-y-4">
+                    <div className="space-y-3 sm:space-y-4">
                       {completed.map((session) => (
                         <SessionCard
                           key={session.id}

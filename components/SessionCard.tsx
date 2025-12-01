@@ -23,7 +23,7 @@ export function SessionCard({
   return (
     <div
       className={cn(
-        'rounded-lg border p-4 transition-all',
+        'rounded-lg border p-3 transition-all sm:p-4',
         status === 'current'
           ? 'border-blue-500 bg-blue-50 dark:bg-blue-950'
           : status === 'upcoming'
@@ -32,40 +32,40 @@ export function SessionCard({
         'hover:shadow-md'
       )}
     >
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex-1">
-          <div className="mb-2 flex items-center gap-2">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex-1 min-w-0">
+          <div className="mb-2 flex flex-wrap items-center gap-2">
+            <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 sm:text-lg break-words">
               {session.title || 'Ingen tittel'}
             </h3>
             {status === 'current' && (
-              <span className="rounded-full bg-blue-500 px-2 py-1 text-xs font-medium text-white">
+              <span className="rounded-full bg-blue-500 px-2 py-1 text-xs font-medium text-white whitespace-nowrap">
                 Nå
               </span>
             )}
           </div>
 
           {session.speaker && (
-            <p className="mb-1 text-sm text-gray-600 dark:text-gray-400">
+            <p className="mb-1 text-sm text-gray-600 dark:text-gray-400 break-words">
               <span className="font-medium">Foredragsholder:</span> {session.speaker}
             </p>
           )}
 
-          <div className="mb-2 flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400">
-            <div>
+          <div className="mb-2 flex flex-col gap-2 text-sm text-gray-600 dark:text-gray-400 sm:flex-row sm:flex-wrap sm:gap-4">
+            <div className="flex-shrink-0">
               <span className="font-medium">Tid:</span> {formatTimeRange(startTime, endTime)}
             </div>
-            <div>
+            <div className="flex-shrink-0">
               <span className="font-medium">Rom:</span> {session.room}
             </div>
           </div>
 
           {session.description && (
-            <p className="text-sm text-gray-600 dark:text-gray-400">{session.description}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 break-words">{session.description}</p>
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-row gap-2 sm:flex-col sm:flex-shrink-0">
           {onFavoriteToggle && (
             <button
               onClick={() => onFavoriteToggle(session.id)}

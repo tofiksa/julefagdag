@@ -33,14 +33,14 @@ export function AgendaList({
   const { current, upcoming, completed } = groupSessionsByStatus(sortedSessions, currentTime)
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Current Sessions */}
       {current.length > 0 && (
         <section>
-          <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <h2 className="mb-3 text-xl font-bold text-gray-900 dark:text-gray-100 sm:mb-4 sm:text-2xl">
             Nå pågår
           </h2>
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {current.map((session) => (
               <SessionCard
                 key={session.id}
@@ -58,10 +58,10 @@ export function AgendaList({
       {/* Upcoming Sessions */}
       {upcoming.length > 0 && (
         <section>
-          <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <h2 className="mb-3 text-xl font-bold text-gray-900 dark:text-gray-100 sm:mb-4 sm:text-2xl">
             Kommende
           </h2>
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {upcoming.map((session) => (
               <SessionCard
                 key={session.id}
@@ -79,10 +79,10 @@ export function AgendaList({
       {/* Completed Sessions */}
       {completed.length > 0 && (
         <section>
-          <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <h2 className="mb-3 text-xl font-bold text-gray-900 dark:text-gray-100 sm:mb-4 sm:text-2xl">
             Ferdig
           </h2>
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {completed.map((session) => (
               <SessionCard
                 key={session.id}

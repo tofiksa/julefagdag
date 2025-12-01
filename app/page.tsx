@@ -55,17 +55,18 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/80 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/80">
-        <div className="mx-auto max-w-4xl px-4 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+        <div className="mx-auto max-w-4xl px-3 py-3 sm:px-4 sm:py-4">
+          <div className="flex items-center justify-between gap-2">
+            <h1 className="text-lg font-bold text-gray-900 dark:text-gray-100 sm:text-xl md:text-2xl truncate">
               🌲 SPK Jule-Fagdag 2025
             </h1>
             <Link
               href="/favorites"
-              className="flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+              className="flex items-center gap-1.5 rounded-lg px-2 py-2 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 sm:gap-2 sm:px-4 sm:text-sm min-h-[44px] min-w-[44px] sm:min-w-auto"
+              aria-label={`Favoritter${favorites.length > 0 ? ` (${favorites.length})` : ''}`}
             >
               <svg
-                className="h-5 w-5"
+                className="h-5 w-5 flex-shrink-0"
                 fill={favorites.length > 0 ? 'currentColor' : 'none'}
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -78,17 +79,17 @@ export default function Home() {
                 />
               </svg>
               {favorites.length > 0 && (
-                <span className="rounded-full bg-blue-500 px-2 py-0.5 text-xs font-medium text-white">
+                <span className="rounded-full bg-blue-500 px-1.5 py-0.5 text-xs font-medium text-white sm:px-2">
                   {favorites.length}
                 </span>
               )}
-              Favoritter
+              <span className="hidden sm:inline">Favoritter</span>
             </Link>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-4xl px-4 py-8">
+      <main className="mx-auto max-w-4xl px-3 py-6 sm:px-4 sm:py-8">
         {loading && (
           <div className="flex items-center justify-center py-12">
             <div className="text-gray-600 dark:text-gray-400">Laster agenda...</div>

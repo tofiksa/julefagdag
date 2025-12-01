@@ -75,8 +75,8 @@ self.addEventListener('push', (event) => {
   const title = data.title || 'Julefagdag';
   const options = {
     body: data.body || 'Du har en varsel',
-    icon: '/icon-192.png',
-    badge: '/icon-192.png',
+    icon: '/icon-192.svg',
+    badge: '/icon-192.svg',
     vibrate: [200, 100, 200],
     data: data,
     tag: data.tag || 'julefagdag-notification',

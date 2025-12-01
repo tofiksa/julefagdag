@@ -47,8 +47,8 @@ function showNotification(data: NotificationData) {
     navigator.serviceWorker.ready.then((registration) => {
       registration.showNotification(data.title, {
         body,
-        icon: '/icon-192.png',
-        badge: '/icon-192.png',
+      icon: '/icon-192.svg',
+      badge: '/icon-192.svg',
         vibrate: [200, 100, 200],
         tag: `session-${data.sessionId}`,
         data: {

@@ -23,8 +23,8 @@ export const metadata: Metadata = {
     title: "Julefagdag",
   },
   icons: {
-    icon: "/icon-192.png",
-    apple: "/icon-192.png",
+    icon: "/icon-192.svg",
+    apple: "/icon-192.svg",
   },
 };
 

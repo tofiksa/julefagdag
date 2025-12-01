@@ -123,6 +123,7 @@ export default function Home() {
             <AgendaList
               sessions={sessions}
               favorites={favorites}
+              currentTime={currentTime}
               onFavoriteToggle={toggleFavorite}
               onFeedbackClick={(sessionId) => {
                 const session = sessions.find((s) => s.id === sessionId)

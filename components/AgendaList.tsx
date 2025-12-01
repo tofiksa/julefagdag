@@ -10,6 +10,7 @@ interface AgendaListProps {
   favorites?: string[]
   onFavoriteToggle?: (sessionId: string) => void
   onFeedbackClick?: (sessionId: string) => void
+  currentTime?: Date
 }
 
 export function AgendaList({
@@ -17,17 +18,8 @@ export function AgendaList({
   favorites = [],
   onFavoriteToggle,
   onFeedbackClick,
+  currentTime = new Date(),
 }: AgendaListProps) {
-  const [currentTime, setCurrentTime] = useState(new Date())
-
-  // Update current time every minute
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(new Date())
-    }, 60000) // Update every minute
-
-    return () => clearInterval(interval)
-  }, [])
 
   const sortedSessions = sortSessionsByTime(sessions, currentTime)
   const { current, upcoming, completed } = groupSessionsByStatus(sortedSessions, currentTime)

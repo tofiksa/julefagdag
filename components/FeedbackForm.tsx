@@ -134,7 +134,7 @@ export function FeedbackForm({
                 emoji="👍"
               />
               <EmojiButton
-                value={useful === false ? false : null}
+                value={useful === false ? true : null}
                 onClick={() => setUseful(false)}
                 label="Nei"
                 emoji="👎"
@@ -155,7 +155,7 @@ export function FeedbackForm({
                 emoji="👍"
               />
               <EmojiButton
-                value={learned === false ? false : null}
+                value={learned === false ? true : null}
                 onClick={() => setLearned(false)}
                 label="Nei"
                 emoji="👎"

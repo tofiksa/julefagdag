@@ -123,7 +123,17 @@ export function FeedbackForm({
           {sessionTitle}
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+        {isSuccess && (
+          <div className="mb-4 rounded-lg bg-green-50 p-4 text-center dark:bg-green-900/20">
+            <div className="mb-2 text-4xl">😊</div>
+            <p className="text-sm font-medium text-green-800 dark:text-green-200">
+              Takk! Tilbakemeldingen er mottatt
+            </p>
+          </div>
+        )}
+
+        {!isSuccess && (
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           {/* Question 1: Useful */}
           <div>
             <div className="mb-3 block text-sm font-medium text-gray-900 dark:text-gray-100">
@@ -193,23 +203,24 @@ export function FeedbackForm({
             </div>
           )}
 
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-3 font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 min-h-[44px]"
-            >
-              Avbryt
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex-1 rounded-lg bg-blue-600 px-4 py-3 font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50 min-h-[44px]"
-            >
-              {isSubmitting ? "Sender..." : "Send tilbakemelding"}
-            </button>
-          </div>
-        </form>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-3 font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 min-h-[44px]"
+              >
+                Avbryt
+              </button>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="flex-1 rounded-lg bg-blue-600 px-4 py-3 font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50 min-h-[44px]"
+              >
+                {isSubmitting ? "Sender..." : "Send tilbakemelding"}
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );

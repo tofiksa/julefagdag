@@ -41,8 +41,14 @@ npm install
 
 3. Opprett `.env` fil med database URL:
 ```bash
-DATABASE_URL="postgresql://user:password@localhost:5432/julefagdag"
+# Kopier eksempel-filen
+cp .env.example .env
+# Rediger .env og legg til din DATABASE_URL
 ```
+
+For lokal utvikling kan du bruke:
+- Lokal PostgreSQL: `DATABASE_URL="postgresql://user:password@localhost:5432/julefagdag"`
+- Eller opprett en Vercel Postgres database (se `DEPLOYMENT.md` for detaljer)
 
 4. Kjør Prisma migrations:
 ```bash

@@ -67,8 +67,8 @@ export default function FavoritesPage() {
     favorites.includes(session.id)
   )
 
-  const sortedFavorites = sortSessionsByTime(favoriteSessions, currentTime)
-  const { current, upcoming, completed } = groupSessionsByStatus(sortedFavorites, currentTime)
+  const sortedFavorites = sortSessionsByTime(favoriteSessions, currentTime ?? undefined)
+  const { current, upcoming, completed } = groupSessionsByStatus(sortedFavorites, currentTime ?? undefined)
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">

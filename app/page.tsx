@@ -32,7 +32,7 @@ export default function Home() {
   }, []);
 
   // Set up notifications
-  useNotifications(sessions, currentTime);
+  useNotifications(sessions, currentTime ?? new Date());
 
   useEffect(() => {
     async function fetchSessions() {

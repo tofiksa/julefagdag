@@ -13,10 +13,22 @@ export default function FavoritesPage() {
   const [sessions, setSessions] = useState<Session[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [currentTime, setCurrentTime] = useState(new Date())
+  const [currentTime, setCurrentTime] = useState<Date | null>(null)
   const [feedbackSession, setFeedbackSession] = useState<Session | null>(null)
   const { favorites, toggleFavorite } = useFavorites()
   const { hasSubmittedFeedback, markAsSubmitted } = useFeedback()
+
+  // Initialize and update current time every minute
+  useEffect(() => {
+    // Set initial time on client side only
+    setCurrentTime(new Date())
+    
+    const interval = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 60000) // Update every minute
+
+    return () => clearInterval(interval)
+  }, [])
 
   useEffect(() => {
     async function fetchSessions() {
@@ -48,15 +60,6 @@ export default function FavoritesPage() {
     }, 30000)
 
     return () => clearInterval(refreshInterval)
-  }, [])
-
-  // Update current time every minute
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(new Date())
-    }, 60000) // Update every minute
-
-    return () => clearInterval(interval)
   }, [])
 
   // Filter sessions to only show favorites
@@ -99,7 +102,7 @@ export default function FavoritesPage() {
           </div>
         )}
 
-        {!loading && !error && (
+        {!loading && !error && currentTime && (
           <>
             {favoriteSessions.length === 0 ? (
               <div className="rounded-lg border border-gray-200 bg-white p-12 text-center dark:border-gray-700 dark:bg-gray-800">

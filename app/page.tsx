@@ -15,12 +15,15 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [feedbackSession, setFeedbackSession] = useState<Session | null>(null);
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState<Date | null>(null);
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const { hasSubmittedFeedback, markAsSubmitted } = useFeedback();
 
-  // Update current time every minute
+  // Initialize and update current time every minute
   useEffect(() => {
+    // Set initial time on client side only
+    setCurrentTime(new Date());
+    
     const interval = setInterval(() => {
       setCurrentTime(new Date());
     }, 60000); // Update every minute
@@ -159,7 +162,7 @@ export default function Home() {
           </div>
         )}
 
-        {!loading && !error && (
+        {!loading && !error && currentTime && (
           <>
             <NotificationBanner sessions={sessions} currentTime={currentTime} />
             <AgendaList

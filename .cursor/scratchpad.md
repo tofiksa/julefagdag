@@ -37,30 +37,30 @@ Applikasjonen skal være enkel å bruke på både iOS og Android-enheter og host
 ## High-level Task Breakdown
 
 ### Fase 1: Prosjekt-oppsett og grunnstruktur
-- [ ] 1.1: Initialiser Next.js 15 prosjekt med TypeScript
-- [ ] 1.2: Konfigurer Tailwind CSS for mobile-first design
-- [ ] 1.3: Sett opp Prisma med PostgreSQL (Vercel Postgres)
-- [ ] 1.4: Konfigurer GitHub repository og Vercel deployment
-- [ ] 1.5: Opprett grunnleggende prosjektstruktur (komponenter, utils, types)
+- [x] 1.1: Initialiser Next.js 15 prosjekt med TypeScript
+- [x] 1.2: Konfigurer Tailwind CSS for mobile-first design
+- [x] 1.3: Sett opp Prisma med PostgreSQL (Vercel Postgres)
+- [x] 1.4: Konfigurer GitHub repository og Vercel deployment
+- [x] 1.5: Opprett grunnleggende prosjektstruktur (komponenter, utils, types)
 
 ### Fase 2: Data-modell og database
-- [ ] 2.1: Design Prisma schema for Session og Feedback
-- [ ] 2.2: Opprett seed-data med alle foredrag fra agendaen
-- [ ] 2.3: Sett opp Prisma migrations
-- [ ] 2.4: Opprett API routes for å hente sesjoner og lagre tilbakemeldinger
+- [x] 2.1: Design Prisma schema for Session og Feedback
+- [x] 2.2: Opprett seed-data med alle foredrag fra agendaen
+- [x] 2.3: Sett opp Prisma migrations
+- [x] 2.4: Opprett API routes for å hente sesjoner og lagre tilbakemeldinger
 
 ### Fase 3: Agenda-visning og dynamisk organisering
-- [ ] 3.1: Opprett SessionCard komponent for å vise foredrag
-- [ ] 3.2: Implementer tidsbasert sortering (nåværende og kommende)
-- [ ] 3.3: Opprett AgendaList komponent med seksjoner (Nå, Kommende, Ferdig)
-- [ ] 3.4: Implementer real-time oppdatering av tidsstatus
-- [ ] 3.5: Legg til visuell indikator for gjeldende foredrag
+- [x] 3.1: Opprett SessionCard komponent for å vise foredrag
+- [x] 3.2: Implementer tidsbasert sortering (nåværende og kommende)
+- [x] 3.3: Opprett AgendaList komponent med seksjoner (Nå, Kommende, Ferdig)
+- [x] 3.4: Implementer real-time oppdatering av tidsstatus
+- [x] 3.5: Legg til visuell indikator for gjeldende foredrag (blå bakgrunn og "Nå"-badge i SessionCard)
 
 ### Fase 4: Favoritt-funksjonalitet
-- [ ] 4.1: Implementer favoritt-state (localStorage eller database)
-- [ ] 4.2: Legg til favoritt-knapp på hver SessionCard
-- [ ] 4.3: Opprett "Mine favoritter" visning
-- [ ] 4.4: Implementer varsel-logikk (10 minutter før start)
+- [x] 4.1: Implementer favoritt-state (localStorage eller database)
+- [x] 4.2: Legg til favoritt-knapp på hver SessionCard
+- [x] 4.3: Opprett "Mine favoritter" visning
+- [x] 4.4: Implementer varsel-logikk (10 minutter før start)
 
 ### Fase 5: Notifikasjonssystem
 - [x] 5.1: Sett opp PWA manifest og Service Worker
@@ -175,4 +175,42 @@ Alle commits skal følge [Conventional Commits](https://www.conventionalcommits.
 - LocalStorage for favoritter gir raskere UX enn database-spørsmål
 - Vercel Postgres er enkel å sette opp og integrere med Prisma
 - Commit hver todo som egen commit med semantic commit message
+
+## Status Oppsummering (Oppdatert)
+
+### ✅ Fullstendig implementerte faser:
+- **Fase 1**: Prosjekt-oppsett og grunnstruktur (5/5 oppgaver)
+- **Fase 2**: Data-modell og database (4/4 oppgaver)
+- **Fase 3**: Agenda-visning og dynamisk organisering (5/5 oppgaver)
+- **Fase 4**: Favoritt-funksjonalitet (4/4 oppgaver)
+- **Fase 6**: Tilbakemeldingssystem (5/5 oppgaver)
+
+### ⚠️ Delvis implementerte faser:
+- **Fase 5**: Notifikasjonssystem (3/4 oppgaver)
+  - ✅ PWA manifest og Service Worker
+  - ✅ Web Push API implementert
+  - ✅ Varsel-komponent opprettet
+  - ❌ Testing på iOS og Android gjenstår
+
+- **Fase 7**: Mobile-optimalisering og PWA (3/5 oppgaver)
+  - ✅ Layout optimalisert for små skjermer
+  - ✅ Touch-friendly interaksjoner
+  - ✅ Offline-støtte via Service Worker
+  - ❌ Testing på faktiske enheter gjenstår
+  - ❌ Ytelsesoptimalisering gjenstår
+
+- **Fase 8**: Testing og deploy (1/5 oppgaver)
+  - ✅ Deployment klar (Vercel production)
+  - ❌ End-to-end testing gjenstår
+  - ❌ Database-operasjoner verifisering gjenstår
+  - ❌ Notifikasjonstesting på begge plattformer gjenstår
+  - ❌ Produksjonsverifisering gjenstår
+
+### 📊 Totalt:
+- **Implementert**: 26/34 oppgaver (76%)
+- **Gjenstående**: 8 oppgaver (primært testing og verifisering)
+
+## Browser-basert Testplan
+
+Se [testplan.md](./testplan.md) for detaljert testplan basert på de 5 hovedkravene fra linje 7-11.
 

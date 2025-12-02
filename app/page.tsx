@@ -34,12 +34,18 @@ export default function Home() {
   useEffect(() => {
     async function fetchSessions() {
       try {
-        const response = await fetch("/api/sessions");
+        const response = await fetch("/api/sessions", {
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache",
+          },
+        });
         if (!response.ok) {
           throw new Error("Kunne ikke hente sesjoner");
         }
         const data = await response.json();
         setSessions(data);
+        setError(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : "En feil oppstod");
       } finally {
@@ -48,6 +54,13 @@ export default function Home() {
     }
 
     fetchSessions();
+
+    // Refresh sessions every 30 seconds
+    const refreshInterval = setInterval(() => {
+      fetchSessions();
+    }, 30000);
+
+    return () => clearInterval(refreshInterval);
   }, []);
 
   const handleFeedbackSubmit = async (feedback: {

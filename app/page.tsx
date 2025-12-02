@@ -80,31 +80,53 @@ export default function Home() {
             <h1 className="text-lg font-bold text-gray-900 dark:text-gray-100 sm:text-xl md:text-2xl truncate">
               🌲 SPK Jule-Fagdag 2025
             </h1>
-            <Link
-              href="/favorites"
-              className="flex items-center gap-1.5 rounded-lg px-2 py-2 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 sm:gap-2 sm:px-4 sm:text-sm min-h-[44px] min-w-[44px] sm:min-w-auto"
-              aria-label={`Favoritter${favorites.length > 0 ? ` (${favorites.length})` : ''}`}
-            >
-              <svg
-                className="h-5 w-5 shrink-0"
-                fill={favorites.length > 0 ? 'currentColor' : 'none'}
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+            <div className="flex items-center gap-2">
+              <Link
+                href="/qr"
+                className="flex items-center gap-1.5 rounded-lg px-2 py-2 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 sm:gap-2 sm:px-4 sm:text-sm min-h-[44px] min-w-[44px] sm:min-w-auto"
+                aria-label="QR-kode"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
-                />
-              </svg>
-              {favorites.length > 0 && (
-                <span className="rounded-full bg-blue-500 px-1.5 py-0.5 text-xs font-medium text-white sm:px-2">
-                  {favorites.length}
-                </span>
-              )}
-              <span className="hidden sm:inline">Favoritter</span>
-            </Link>
+                <svg
+                  className="h-5 w-5 shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
+                  />
+                </svg>
+                <span className="hidden sm:inline">QR-kode</span>
+              </Link>
+              <Link
+                href="/favorites"
+                className="flex items-center gap-1.5 rounded-lg px-2 py-2 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 sm:gap-2 sm:px-4 sm:text-sm min-h-[44px] min-w-[44px] sm:min-w-auto"
+                aria-label={`Favoritter${favorites.length > 0 ? ` (${favorites.length})` : ''}`}
+              >
+                <svg
+                  className="h-5 w-5 shrink-0"
+                  fill={favorites.length > 0 ? 'currentColor' : 'none'}
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                  />
+                </svg>
+                {favorites.length > 0 && (
+                  <span className="rounded-full bg-blue-500 px-1.5 py-0.5 text-xs font-medium text-white sm:px-2">
+                    {favorites.length}
+                  </span>
+                )}
+                <span className="hidden sm:inline">Favoritter</span>
+              </Link>
+            </div>
           </div>
         </div>
       </header>

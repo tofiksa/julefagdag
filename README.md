@@ -18,6 +18,14 @@ En mobilvennlig webapplikasjon for å vise agenda for Statens Pensjonskasse Jule
 - **Tailwind CSS**
 - **Vercel** for hosting
 
+## 📖 Hvordan gjøre justeringer
+
+Se [HVORDAN_GJORE_JUSTERINGER.md](./HVORDAN_GJORE_JUSTERINGER.md) for en detaljert guide om:
+- Hvor du finner ulike deler av koden
+- Hvordan du gjør vanlige justeringer (UI, logikk, data)
+- Eksempler på konkrete endringer
+- Testing og feilsøking
+
 ## Lokal utvikling
 
 ### Forutsetninger

@@ -1,76 +1,76 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import type { Session } from '@prisma/client'
-import { AgendaList } from '@/components/AgendaList'
-import { FeedbackForm } from '@/components/FeedbackForm'
-import { NotificationBanner } from '@/components/NotificationBanner'
-import { useFavorites } from '@/hooks/useFavorites'
-import { useFeedback } from '@/hooks/useFeedback'
-import { useNotifications } from '@/hooks/useNotifications'
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import type { Session } from "@prisma/client";
+import { AgendaList } from "@/components/AgendaList";
+import { FeedbackForm } from "@/components/FeedbackForm";
+import { NotificationBanner } from "@/components/NotificationBanner";
+import { useFavorites } from "@/hooks/useFavorites";
+import { useFeedback } from "@/hooks/useFeedback";
+import { useNotifications } from "@/hooks/useNotifications";
 
 export default function Home() {
-  const [sessions, setSessions] = useState<Session[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [feedbackSession, setFeedbackSession] = useState<Session | null>(null)
-  const [currentTime, setCurrentTime] = useState(new Date())
-  const { favorites, toggleFavorite, isFavorite } = useFavorites()
-  const { hasSubmittedFeedback, markAsSubmitted } = useFeedback()
-  
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [feedbackSession, setFeedbackSession] = useState<Session | null>(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const { favorites, toggleFavorite, isFavorite } = useFavorites();
+  const { hasSubmittedFeedback, markAsSubmitted } = useFeedback();
+
   // Update current time every minute
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentTime(new Date())
-    }, 60000) // Update every minute
+      setCurrentTime(new Date());
+    }, 60000); // Update every minute
 
-    return () => clearInterval(interval)
-  }, [])
+    return () => clearInterval(interval);
+  }, []);
 
   // Set up notifications
-  useNotifications(sessions, currentTime)
+  useNotifications(sessions, currentTime);
 
   useEffect(() => {
     async function fetchSessions() {
       try {
-        const response = await fetch('/api/sessions')
+        const response = await fetch("/api/sessions");
         if (!response.ok) {
-          throw new Error('Kunne ikke hente sesjoner')
+          throw new Error("Kunne ikke hente sesjoner");
         }
-        const data = await response.json()
-        setSessions(data)
+        const data = await response.json();
+        setSessions(data);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'En feil oppstod')
+        setError(err instanceof Error ? err.message : "En feil oppstod");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    fetchSessions()
-  }, [])
+    fetchSessions();
+  }, []);
 
   const handleFeedbackSubmit = async (feedback: {
-    sessionId: string
-    useful: boolean
-    learned: boolean
-    explore: boolean
+    sessionId: string;
+    useful: boolean;
+    learned: boolean;
+    explore: boolean;
   }) => {
-    const response = await fetch('/api/feedback', {
-      method: 'POST',
+    const response = await fetch("/api/feedback", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(feedback),
-    })
+    });
 
     if (!response.ok) {
-      throw new Error('Kunne ikke sende tilbakemelding')
+      throw new Error("Kunne ikke sende tilbakemelding");
     }
 
     // Mark as submitted after successful submission
-    markAsSubmitted(feedback.sessionId)
-  }
+    markAsSubmitted(feedback.sessionId);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -104,11 +104,11 @@ export default function Home() {
               <Link
                 href="/favorites"
                 className="flex items-center gap-1.5 rounded-lg px-2 py-2 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 sm:gap-2 sm:px-4 sm:text-sm min-h-[44px] min-w-[44px] sm:min-w-auto"
-                aria-label={`Favoritter${favorites.length > 0 ? ` (${favorites.length})` : ''}`}
+                aria-label={`Favoritter${favorites.length > 0 ? ` (${favorites.length})` : ""}`}
               >
                 <svg
                   className="h-5 w-5 shrink-0"
-                  fill={favorites.length > 0 ? 'currentColor' : 'none'}
+                  fill={favorites.length > 0 ? "currentColor" : "none"}
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -134,7 +134,9 @@ export default function Home() {
       <main className="mx-auto max-w-4xl px-3 py-6 sm:px-4 sm:py-8">
         {loading && (
           <div className="flex items-center justify-center py-12">
-            <div className="text-gray-600 dark:text-gray-400">Laster agenda...</div>
+            <div className="text-gray-600 dark:text-gray-400">
+              Laster agenda...
+            </div>
           </div>
         )}
 
@@ -154,9 +156,9 @@ export default function Home() {
               hasSubmittedFeedback={hasSubmittedFeedback}
               onFavoriteToggle={toggleFavorite}
               onFeedbackClick={(sessionId) => {
-                const session = sessions.find((s) => s.id === sessionId)
+                const session = sessions.find((s) => s.id === sessionId);
                 if (session && !hasSubmittedFeedback(sessionId)) {
-                  setFeedbackSession(session)
+                  setFeedbackSession(session);
                 }
               }}
             />
@@ -167,11 +169,11 @@ export default function Home() {
       {feedbackSession && (
         <FeedbackForm
           sessionId={feedbackSession.id}
-          sessionTitle={feedbackSession.title || 'Ingen tittel'}
+          sessionTitle={feedbackSession.title || "Ingen tittel"}
           onClose={() => setFeedbackSession(null)}
           onSubmit={handleFeedbackSubmit}
         />
       )}
     </div>
-  )
+  );
 }

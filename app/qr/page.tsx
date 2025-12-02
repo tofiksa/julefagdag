@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import Image from 'next/image'
+import Link from "next/link";
+import Image from "next/image";
 
 export default function QRCodePage() {
-  const url = 'https://julefagdag.vercel.app/'
+  const url = "https://julefagdag.vercel.app/";
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -88,6 +88,5 @@ export default function QRCodePage() {
         </div>
       </main>
     </div>
-  )
+  );
 }
-

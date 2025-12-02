@@ -45,7 +45,7 @@ async function main() {
     {
       title: 'Fremtidens arbeidsplass',
       speaker: 'Stine & Emilie',
-      room: 'Sal 1 (felles)',
+      room: 'Sal 1 (breakout)',
       startTime: new Date('2025-12-13T12:45:00'),
       endTime: new Date('2025-12-13T13:10:00'),
       description: 'Foredrag om fremtidens arbeidsplass',
@@ -77,14 +77,14 @@ async function main() {
     {
       title: 'Teambuilding',
       speaker: 'Halil & Mats',
-      room: 'Sal 1 (felles)',
+      room: 'Sal 1 (breakout)',
       startTime: new Date('2025-12-13T14:25:00'),
       endTime: new Date('2025-12-13T14:45:00'),
       description: 'Foredrag om teambuilding',
     },
     {
       title: 'Hvordan lage et programmeringsspråk som kjører på JVM-en',
-      speaker: null,
+      speaker: 'Triera',
       room: 'Sal 2 (breakout)',
       startTime: new Date('2025-12-13T14:25:00'),
       endTime: new Date('2025-12-13T14:45:00'),
@@ -93,7 +93,7 @@ async function main() {
     {
       title: 'Team-skjerm og kjørende OKR-er',
       speaker: 'Leiv-Erik',
-      room: 'Sal 1 (felles)',
+      room: 'Sal 1 (breakout)',
       startTime: new Date('2025-12-13T14:45:00'),
       endTime: new Date('2025-12-13T15:00:00'),
       description: 'Foredrag om team-skjerm og OKR-er',
@@ -109,7 +109,7 @@ async function main() {
     {
       title: 'AI "It\'s here!"',
       speaker: 'Bjørn Erik',
-      room: 'Sal 1 (felles)',
+      room: 'Sal 1 (breakout)',
       startTime: new Date('2025-12-13T15:10:00'),
       endTime: new Date('2025-12-13T15:30:00'),
       description: 'Foredrag om AI',
@@ -131,7 +131,7 @@ async function main() {
       description: 'Foredrag om Vision Pro 2',
     },
     {
-      title: '',
+      title: 'Svart humor',
       speaker: 'Yousef Haddaoui',
       room: 'Sal 1 (felles)',
       startTime: new Date('2025-12-13T16:05:00'),

@@ -23,7 +23,7 @@ export default function Home() {
   useEffect(() => {
     // Set initial time on client side only
     setCurrentTime(new Date());
-    
+
     const interval = setInterval(() => {
       setCurrentTime(new Date());
     }, 60000); // Update every minute

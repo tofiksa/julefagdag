@@ -1,74 +1,80 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import type { Session } from '@prisma/client'
-import { SessionCard } from '@/components/SessionCard'
-import { FeedbackForm } from '@/components/FeedbackForm'
-import { useFavorites } from '@/hooks/useFavorites'
-import { useFeedback } from '@/hooks/useFeedback'
-import { sortSessionsByTime, groupSessionsByStatus } from '@/lib/utils'
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import type { Session } from "@prisma/client";
+import { SessionCard } from "@/components/SessionCard";
+import { FeedbackForm } from "@/components/FeedbackForm";
+import { useFavorites } from "@/hooks/useFavorites";
+import { useFeedback } from "@/hooks/useFeedback";
+import { sortSessionsByTime, groupSessionsByStatus } from "@/lib/utils";
 
 export default function FavoritesPage() {
-  const [sessions, setSessions] = useState<Session[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [currentTime, setCurrentTime] = useState<Date | null>(null)
-  const [feedbackSession, setFeedbackSession] = useState<Session | null>(null)
-  const { favorites, toggleFavorite } = useFavorites()
-  const { hasSubmittedFeedback, markAsSubmitted } = useFeedback()
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentTime, setCurrentTime] = useState<Date | null>(null);
+  const [feedbackSession, setFeedbackSession] = useState<Session | null>(null);
+  const { favorites, toggleFavorite } = useFavorites();
+  const { hasSubmittedFeedback, markAsSubmitted } = useFeedback();
 
   // Initialize and update current time every minute
   useEffect(() => {
     // Set initial time on client side only
-    setCurrentTime(new Date())
-    
-    const interval = setInterval(() => {
-      setCurrentTime(new Date())
-    }, 60000) // Update every minute
+    setCurrentTime(new Date());
 
-    return () => clearInterval(interval)
-  }, [])
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000); // Update every minute
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     async function fetchSessions() {
       try {
-        const response = await fetch('/api/sessions', {
-          cache: 'no-store',
+        const response = await fetch("/api/sessions", {
+          cache: "no-store",
           headers: {
-            'Cache-Control': 'no-cache',
+            "Cache-Control": "no-cache",
           },
-        })
+        });
         if (!response.ok) {
-          throw new Error('Kunne ikke hente sesjoner')
+          throw new Error("Kunne ikke hente sesjoner");
         }
-        const data = await response.json()
-        setSessions(data)
-        setError(null)
+        const data = await response.json();
+        setSessions(data);
+        setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'En feil oppstod')
+        setError(err instanceof Error ? err.message : "En feil oppstod");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    fetchSessions()
+    fetchSessions();
 
     // Refresh sessions every 30 seconds
     const refreshInterval = setInterval(() => {
-      fetchSessions()
-    }, 30000)
+      fetchSessions();
+    }, 30000);
 
-    return () => clearInterval(refreshInterval)
-  }, [])
+    return () => clearInterval(refreshInterval);
+  }, []);
 
   // Filter sessions to only show favorites
   const favoriteSessions = sessions.filter((session) =>
-    favorites.includes(session.id)
-  )
+    favorites.includes(session.id),
+  );
 
-  const sortedFavorites = sortSessionsByTime(favoriteSessions, currentTime ?? undefined)
-  const { current, upcoming, completed } = groupSessionsByStatus(sortedFavorites, currentTime ?? undefined)
+  const sortedFavorites = sortSessionsByTime(
+    favoriteSessions,
+    currentTime ?? undefined,
+  );
+  const { current, upcoming, completed } = groupSessionsByStatus(
+    sortedFavorites,
+    currentTime ?? undefined,
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -92,7 +98,9 @@ export default function FavoritesPage() {
       <main className="mx-auto max-w-4xl px-3 py-6 sm:px-4 sm:py-8">
         {loading && (
           <div className="flex items-center justify-center py-12">
-            <div className="text-gray-600 dark:text-gray-400">Laster favoritter...</div>
+            <div className="text-gray-600 dark:text-gray-400">
+              Laster favoritter...
+            </div>
           </div>
         )}
 
@@ -149,12 +157,16 @@ export default function FavoritesPage() {
                           session={session}
                           currentTime={currentTime}
                           isFavorite={true}
-                          hasSubmittedFeedback={hasSubmittedFeedback(session.id)}
+                          hasSubmittedFeedback={hasSubmittedFeedback(
+                            session.id,
+                          )}
                           onFavoriteToggle={toggleFavorite}
                           onFeedbackClick={(sessionId) => {
-                            const session = sessions.find((s) => s.id === sessionId)
+                            const session = sessions.find(
+                              (s) => s.id === sessionId,
+                            );
                             if (session && !hasSubmittedFeedback(sessionId)) {
-                              setFeedbackSession(session)
+                              setFeedbackSession(session);
                             }
                           }}
                         />
@@ -176,12 +188,16 @@ export default function FavoritesPage() {
                           session={session}
                           currentTime={currentTime}
                           isFavorite={true}
-                          hasSubmittedFeedback={hasSubmittedFeedback(session.id)}
+                          hasSubmittedFeedback={hasSubmittedFeedback(
+                            session.id,
+                          )}
                           onFavoriteToggle={toggleFavorite}
                           onFeedbackClick={(sessionId) => {
-                            const session = sessions.find((s) => s.id === sessionId)
+                            const session = sessions.find(
+                              (s) => s.id === sessionId,
+                            );
                             if (session && !hasSubmittedFeedback(sessionId)) {
-                              setFeedbackSession(session)
+                              setFeedbackSession(session);
                             }
                           }}
                         />
@@ -203,12 +219,16 @@ export default function FavoritesPage() {
                           session={session}
                           currentTime={currentTime}
                           isFavorite={true}
-                          hasSubmittedFeedback={hasSubmittedFeedback(session.id)}
+                          hasSubmittedFeedback={hasSubmittedFeedback(
+                            session.id,
+                          )}
                           onFavoriteToggle={toggleFavorite}
                           onFeedbackClick={(sessionId) => {
-                            const session = sessions.find((s) => s.id === sessionId)
+                            const session = sessions.find(
+                              (s) => s.id === sessionId,
+                            );
                             if (session && !hasSubmittedFeedback(sessionId)) {
-                              setFeedbackSession(session)
+                              setFeedbackSession(session);
                             }
                           }}
                         />
@@ -225,27 +245,26 @@ export default function FavoritesPage() {
       {feedbackSession && (
         <FeedbackForm
           sessionId={feedbackSession.id}
-          sessionTitle={feedbackSession.title || 'Ingen tittel'}
+          sessionTitle={feedbackSession.title || "Ingen tittel"}
           onClose={() => setFeedbackSession(null)}
           onSubmit={async (feedback) => {
-            const response = await fetch('/api/feedback', {
-              method: 'POST',
+            const response = await fetch("/api/feedback", {
+              method: "POST",
               headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
               },
               body: JSON.stringify(feedback),
-            })
+            });
 
             if (!response.ok) {
-              throw new Error('Kunne ikke sende tilbakemelding')
+              throw new Error("Kunne ikke sende tilbakemelding");
             }
 
             // Mark as submitted after successful submission
-            markAsSubmitted(feedback.sessionId)
+            markAsSubmitted(feedback.sessionId);
           }}
         />
       )}
     </div>
-  )
+  );
 }
-

@@ -9,6 +9,8 @@ interface EventFeedbackFormProps {
 
 export function EventFeedbackForm({ onSuccess, onClose }: EventFeedbackFormProps) {
   const [comment, setComment] = useState('')
+  const [rating, setRating] = useState<number | null>(null)
+  const [hoveredRating, setHoveredRating] = useState<number | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isSuccess, setIsSuccess] = useState(false)
@@ -18,13 +20,14 @@ export function EventFeedbackForm({ onSuccess, onClose }: EventFeedbackFormProps
     setError(null)
     setIsSubmitting(true)
 
-    if (!comment.trim()) {
-      setError('Vennligst skriv en kommentar')
+    // At least one of comment or rating must be provided
+    if (!comment.trim() && !rating) {
+      setError('Vennligst gi enten en kommentar eller en vurdering')
       setIsSubmitting(false)
       return
     }
 
-    if (comment.length > 1000) {
+    if (comment.trim() && comment.length > 1000) {
       setError('Kommentaren kan ikke være lengre enn 1000 tegn')
       setIsSubmitting(false)
       return
@@ -36,7 +39,10 @@ export function EventFeedbackForm({ onSuccess, onClose }: EventFeedbackFormProps
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ comment: comment.trim() }),
+        body: JSON.stringify({ 
+          comment: comment.trim(),
+          rating: rating || null,
+        }),
       })
 
       if (!response.ok) {
@@ -46,6 +52,7 @@ export function EventFeedbackForm({ onSuccess, onClose }: EventFeedbackFormProps
 
       setIsSuccess(true)
       setComment('')
+      setRating(null)
       
       // Call onSuccess callback after a short delay
       setTimeout(() => {
@@ -98,6 +105,48 @@ export function EventFeedbackForm({ onSuccess, onClose }: EventFeedbackFormProps
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Star Rating */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Vurder fagdagen (valgfritt)
+          </label>
+          <div className="flex items-center gap-1">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                type="button"
+                onClick={() => {
+                  setRating(star)
+                  setError(null)
+                }}
+                onMouseEnter={() => setHoveredRating(star)}
+                onMouseLeave={() => setHoveredRating(null)}
+                className="focus:outline-none transition-transform hover:scale-110"
+                aria-label={`Gi ${star} ${star === 1 ? 'stjerne' : 'stjerner'}`}
+              >
+                <svg
+                  className={`h-8 w-8 ${
+                    (hoveredRating !== null && star <= hoveredRating) ||
+                    (hoveredRating === null && rating !== null && star <= rating!)
+                      ? 'text-yellow-400 fill-yellow-400'
+                      : 'text-gray-300 dark:text-gray-600'
+                  }`}
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                </svg>
+              </button>
+            ))}
+            {rating && (
+              <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                {rating} {rating === 1 ? 'stjerne' : 'stjerner'}
+              </span>
+            )}
+          </div>
+        </div>
+
         <div>
           <label
             htmlFor="event-comment"
@@ -115,8 +164,7 @@ export function EventFeedbackForm({ onSuccess, onClose }: EventFeedbackFormProps
             rows={4}
             maxLength={1000}
             className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-400"
-            placeholder="Skriv din tilbakemelding her..."
-            required
+            placeholder="Skriv din tilbakemelding her (valgfritt)..."
             disabled={isSubmitting}
           />
           <div className="mt-1 flex justify-between text-xs text-gray-500 dark:text-gray-400">
@@ -133,7 +181,7 @@ export function EventFeedbackForm({ onSuccess, onClose }: EventFeedbackFormProps
         <div className="flex gap-2">
           <button
             type="submit"
-            disabled={isSubmitting || !comment.trim()}
+            disabled={isSubmitting || (!comment.trim() && !rating)}
             className="flex-1 rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isSubmitting ? 'Sender...' : 'Send tilbakemelding'}

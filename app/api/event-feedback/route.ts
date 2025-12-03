@@ -4,28 +4,43 @@ import { prisma } from '@/lib/prisma'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { comment } = body
+    const { comment, rating } = body
 
-    // Validate required fields
-    if (!comment || typeof comment !== 'string' || comment.trim().length === 0) {
+    // At least one of comment or rating must be provided
+    const hasComment = comment && typeof comment === 'string' && comment.trim().length > 0
+    const hasRating = rating !== null && rating !== undefined
+
+    if (!hasComment && !hasRating) {
       return NextResponse.json(
-        { error: 'Comment is required and cannot be empty' },
+        { error: 'Either a comment or a rating must be provided' },
         { status: 400 }
       )
     }
 
-    // Validate comment length (max 1000 characters)
-    if (comment.length > 1000) {
+    // Validate comment length if provided (max 1000 characters)
+    if (hasComment && comment.length > 1000) {
       return NextResponse.json(
         { error: 'Comment cannot exceed 1000 characters' },
         { status: 400 }
       )
     }
 
+    // Validate rating if provided (must be between 1 and 5)
+    if (hasRating) {
+      const ratingNum = Number(rating)
+      if (!Number.isInteger(ratingNum) || ratingNum < 1 || ratingNum > 5) {
+        return NextResponse.json(
+          { error: 'Rating must be an integer between 1 and 5' },
+          { status: 400 }
+        )
+      }
+    }
+
     // Create event feedback
     const feedback = await prisma.eventFeedback.create({
       data: {
-        comment: comment.trim(),
+        comment: hasComment ? comment.trim() : '',
+        rating: hasRating ? Number(rating) : null,
       },
     })
 

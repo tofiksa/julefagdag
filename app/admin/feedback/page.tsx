@@ -44,6 +44,7 @@ interface SessionFeedbackResult {
 interface EventFeedback {
   id: string
   comment: string
+  rating: number | null
   createdAt: Date
 }
 
@@ -208,27 +209,157 @@ export default function AdminFeedbackPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-                Totalt antall tilbakemeldinger: <span className="font-semibold">{eventFeedbacks.length}</span>
+              {/* Statistics */}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
+                  <div className="text-sm font-medium text-blue-600 dark:text-blue-400">
+                    Totalt antall tilbakemeldinger
+                  </div>
+                  <div className="mt-1 text-2xl font-bold text-blue-900 dark:text-blue-100">
+                    {eventFeedbacks.length}
+                  </div>
+                </div>
+                {(() => {
+                  const ratings = eventFeedbacks.filter(f => f.rating !== null).map(f => f.rating!)
+                  const avgRating = ratings.length > 0 
+                    ? (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1)
+                    : '0'
+                  const ratingCount = ratings.length
+                  
+                  return (
+                    <div className="rounded-lg bg-yellow-50 p-4 dark:bg-yellow-900/20">
+                      <div className="text-sm font-medium text-yellow-600 dark:text-yellow-400">
+                        Gjennomsnittlig vurdering
+                      </div>
+                      <div className="mt-1 flex items-center gap-2">
+                        <div className="text-2xl font-bold text-yellow-900 dark:text-yellow-100">
+                          {avgRating}
+                        </div>
+                        <div className="flex">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <svg
+                              key={star}
+                              className={`h-5 w-5 ${
+                                star <= Math.round(Number(avgRating))
+                                  ? 'text-yellow-400 fill-yellow-400'
+                                  : 'text-gray-300 dark:text-gray-600'
+                              }`}
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                              aria-hidden="true"
+                            >
+                              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                            </svg>
+                          ))}
+                        </div>
+                        <div className="text-sm text-yellow-700 dark:text-yellow-300">
+                          ({ratingCount} {ratingCount === 1 ? 'vurdering' : 'vurderinger'})
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })()}
               </div>
+
+              {/* Rating Distribution */}
+              {(() => {
+                const ratingCounts = [1, 2, 3, 4, 5].map(star => 
+                  eventFeedbacks.filter(f => f.rating === star).length
+                )
+                const totalRatings = ratingCounts.reduce((a, b) => a + b, 0)
+                
+                if (totalRatings === 0) return null
+                
+                return (
+                  <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-700">
+                    <h3 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
+                      Vurderingsfordeling
+                    </h3>
+                    <div className="space-y-2">
+                      {[5, 4, 3, 2, 1].map((star) => {
+                        const count = ratingCounts[star - 1]
+                        const percentage = totalRatings > 0 ? (count / totalRatings) * 100 : 0
+                        return (
+                          <div key={star} className="flex items-center gap-2">
+                            <div className="flex w-20 items-center gap-1">
+                              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                                {star}
+                              </span>
+                              <svg
+                                className="h-4 w-4 text-yellow-400 fill-yellow-400"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                              >
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                              </svg>
+                            </div>
+                            <div className="flex-1">
+                              <div className="h-2 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-600">
+                                <div
+                                  className="h-full bg-yellow-400 transition-all"
+                                  style={{ width: `${percentage}%` }}
+                                />
+                              </div>
+                            </div>
+                            <div className="w-12 text-right text-sm text-gray-600 dark:text-gray-400">
+                              {count} ({Math.round(percentage)}%)
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )
+              })()}
+
+              {/* Individual Feedbacks */}
               <div className="space-y-3 max-h-96 overflow-y-auto">
                 {eventFeedbacks.map((feedback) => (
                   <div
                     key={feedback.id}
                     className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-700"
                   >
-                    <p className="text-gray-900 dark:text-gray-100 whitespace-pre-wrap">
-                      {feedback.comment}
-                    </p>
-                    <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                      {new Date(feedback.createdAt).toLocaleString('no-NO', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </p>
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        {feedback.comment && (
+                          <p className="text-gray-900 dark:text-gray-100 whitespace-pre-wrap">
+                            {feedback.comment}
+                          </p>
+                        )}
+                        {feedback.rating && (
+                          <div className="mt-2 flex items-center gap-1">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <svg
+                                key={star}
+                                className={`h-5 w-5 ${
+                                  star <= feedback.rating!
+                                    ? 'text-yellow-400 fill-yellow-400'
+                                    : 'text-gray-300 dark:text-gray-600'
+                                }`}
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                              >
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                              </svg>
+                            ))}
+                            <span className="ml-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                              {feedback.rating} / 5
+                            </span>
+                          </div>
+                        )}
+                        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                          {new Date(feedback.createdAt).toLocaleString('no-NO', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>

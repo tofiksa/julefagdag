@@ -40,6 +40,7 @@ model Feedback {
 model EventFeedback {
   id        String   @id @default(cuid())
   comment   String
+  rating    Int?     // 1-5 stars, optional
   createdAt DateTime @default(now())
 
   @@map("event_feedbacks")

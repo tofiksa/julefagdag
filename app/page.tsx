@@ -5,9 +5,11 @@ import Link from "next/link";
 import type { Session } from "@prisma/client";
 import { AgendaList } from "@/components/AgendaList";
 import { FeedbackForm } from "@/components/FeedbackForm";
+import { EventFeedbackForm } from "@/components/EventFeedbackForm";
 import { NotificationBanner } from "@/components/NotificationBanner";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useFeedback } from "@/hooks/useFeedback";
+import { useEventFeedback } from "@/hooks/useEventFeedback";
 import { useNotifications } from "@/hooks/useNotifications";
 
 export default function Home() {
@@ -16,8 +18,20 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [feedbackSession, setFeedbackSession] = useState<Session | null>(null);
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
-  const { favorites, toggleFavorite, isFavorite } = useFavorites();
+  const [showEventFeedback, setShowEventFeedback] = useState(false);
+  const { favorites, toggleFavorite } = useFavorites();
   const { hasSubmittedFeedback, markAsSubmitted } = useFeedback();
+  const {
+    hasSubmittedEventFeedback,
+    markAsSubmitted: markEventFeedbackAsSubmitted,
+  } = useEventFeedback();
+
+  // Check event feedback status after mount to avoid hydration mismatch
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setShowEventFeedback(!hasSubmittedEventFeedback);
+    }
+  }, [hasSubmittedEventFeedback]);
 
   // Initialize and update current time every minute
   useEffect(() => {
@@ -107,6 +121,7 @@ export default function Home() {
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -127,6 +142,7 @@ export default function Home() {
                   fill={favorites.length > 0 ? "currentColor" : "none"}
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -165,6 +181,19 @@ export default function Home() {
         {!loading && !error && currentTime && (
           <>
             <NotificationBanner sessions={sessions} currentTime={currentTime} />
+
+            {/* Event Feedback Banner - Always visible if not submitted */}
+            {showEventFeedback && (
+              <div className="mb-6">
+                <EventFeedbackForm
+                  onSuccess={() => {
+                    markEventFeedbackAsSubmitted();
+                    setShowEventFeedback(false);
+                  }}
+                />
+              </div>
+            )}
+
             <AgendaList
               sessions={sessions}
               favorites={favorites}

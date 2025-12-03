@@ -41,10 +41,17 @@ interface SessionFeedbackResult {
   feedbacks: Feedback[]
 }
 
+interface EventFeedback {
+  id: string
+  comment: string
+  createdAt: Date
+}
+
 export default function AdminFeedbackPage() {
   const [authenticated, setAuthenticated] = useState(false)
   const [loading, setLoading] = useState(true)
   const [results, setResults] = useState<SessionFeedbackResult[]>([])
+  const [eventFeedbacks, setEventFeedbacks] = useState<EventFeedback[]>([])
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -59,8 +66,12 @@ export default function AdminFeedbackPage() {
     // Fetch feedback results when authenticated
     if (authenticated) {
       fetchResults()
+      fetchEventFeedbacks()
       // Refresh every 30 seconds
-      const interval = setInterval(fetchResults, 30000)
+      const interval = setInterval(() => {
+        fetchResults()
+        fetchEventFeedbacks()
+      }, 30000)
       return () => clearInterval(interval)
     }
   }, [authenticated])
@@ -91,6 +102,33 @@ export default function AdminFeedbackPage() {
       setError(null)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'En feil oppstod')
+    }
+  }
+
+  const fetchEventFeedbacks = async () => {
+    try {
+      const response = await fetch('/api/event-feedback', {
+        cache: 'no-store',
+        credentials: 'include',
+        headers: {
+          'Cache-Control': 'no-cache',
+        },
+      })
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          logoutAdmin()
+          setAuthenticated(false)
+          setEventFeedbacks([])
+          return
+        }
+        throw new Error('Kunne ikke hente event-tilbakemeldinger')
+      }
+
+      const data = await response.json()
+      setEventFeedbacks(data)
+    } catch (err) {
+      console.error('Error fetching event feedbacks:', err)
     }
   }
 
@@ -159,6 +197,46 @@ export default function AdminFeedbackPage() {
           </div>
         )}
 
+        {/* Event Feedback Summary Section */}
+        <div className="mb-8 rounded-lg border border-gray-200 bg-white p-6 shadow-md dark:border-gray-700 dark:bg-gray-800">
+          <h2 className="mb-4 text-2xl font-bold text-gray-900 dark:text-gray-100">
+            💬 Tilbakemeldinger til hele arrangementet
+          </h2>
+          {eventFeedbacks.length === 0 ? (
+            <div className="rounded-lg bg-gray-50 p-6 text-center text-gray-600 dark:bg-gray-700 dark:text-gray-400">
+              Ingen tilbakemeldinger mottatt ennå
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="mb-4 text-sm text-gray-600 dark:text-gray-400">
+                Totalt antall tilbakemeldinger: <span className="font-semibold">{eventFeedbacks.length}</span>
+              </div>
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {eventFeedbacks.map((feedback) => (
+                  <div
+                    key={feedback.id}
+                    className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-700"
+                  >
+                    <p className="text-gray-900 dark:text-gray-100 whitespace-pre-wrap">
+                      {feedback.comment}
+                    </p>
+                    <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                      {new Date(feedback.createdAt).toLocaleString('no-NO', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Session Feedback Results */}
         <FeedbackResults results={results} />
       </main>
     </div>

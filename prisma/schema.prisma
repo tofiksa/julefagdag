@@ -36,3 +36,11 @@ model Feedback {
 
   @@map("feedbacks")
 }
+
+model EventFeedback {
+  id        String   @id @default(cuid())
+  comment   String
+  createdAt DateTime @default(now())
+
+  @@map("event_feedbacks")
+}

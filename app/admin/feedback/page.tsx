@@ -93,6 +93,7 @@ export default function AdminFeedbackPage() {
           logoutAdmin()
           setAuthenticated(false)
           setResults([])
+          setEventFeedbacks([])
           return
         }
         throw new Error('Kunne ikke hente tilbakemeldinger')
@@ -120,6 +121,7 @@ export default function AdminFeedbackPage() {
         if (response.status === 401) {
           logoutAdmin()
           setAuthenticated(false)
+          setResults([])
           setEventFeedbacks([])
           return
         }
@@ -128,8 +130,11 @@ export default function AdminFeedbackPage() {
 
       const data = await response.json()
       setEventFeedbacks(data)
+      setError(null)
     } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Kunne ikke hente event-tilbakemeldinger'
       console.error('Error fetching event feedbacks:', err)
+      setError(errorMessage)
     }
   }
 
@@ -148,10 +153,11 @@ export default function AdminFeedbackPage() {
     } catch (err) {
       console.error('Error logging out:', err)
     } finally {
-      // Clear client-side authentication
+      // Clear client-side authentication and all sensitive data
       logoutAdmin()
       setAuthenticated(false)
       setResults([])
+      setEventFeedbacks([])
     }
   }
 

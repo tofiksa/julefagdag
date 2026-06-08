@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# local planning / scratch (not tracked)
+/improvements
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

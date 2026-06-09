@@ -8,11 +8,11 @@
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write",
-    "db:seed": "tsx prisma/seed.ts",
+    "db:seed": "tsx --env-file=.env.local prisma/seed.ts",
     "postinstall": "prisma generate"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx --env-file=.env.local prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

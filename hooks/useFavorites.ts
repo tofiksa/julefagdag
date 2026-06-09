@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const FAVORITES_KEY = "julefagdag-favorites";
 
@@ -15,88 +15,51 @@ function getFavoritesFromStorage(): string[] {
   }
 }
 
-export function useFavorites() {
-  const [favorites, setFavorites] = useState<string[]>(() =>
-    getFavoritesFromStorage(),
-  );
-  const isUpdatingRef = useRef(false);
+function saveFavoritesToStorage(favorites: string[]) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+  } catch (error) {
+    console.error("Error saving favorites:", error);
+  }
+}
 
-  // Load favorites from localStorage on mount and listen for changes
+export function useFavorites() {
+  // Start empty so the server-rendered HTML and the first client render match;
+  // the real values are loaded from localStorage in the mount effect below.
+  const [favorites, setFavorites] = useState<string[]>([]);
+
+  // Load from storage on mount, and keep in sync with other tabs/windows.
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // Listen for storage events (changes from other tabs/windows)
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === FAVORITES_KEY && e.newValue && !isUpdatingRef.current) {
-        try {
-          const newFavorites = JSON.parse(e.newValue);
-          isUpdatingRef.current = true;
-          setFavorites(newFavorites);
-          setTimeout(() => {
-            isUpdatingRef.current = false;
-          }, 100);
-        } catch (error) {
-          console.error("Error parsing favorites from storage:", error);
-        }
-      }
-    };
+    setFavorites(getFavoritesFromStorage());
 
-    // Listen for custom event (changes from same tab)
-    const handleCustomStorageChange = () => {
-      if (!isUpdatingRef.current) {
-        const stored = getFavoritesFromStorage();
-        isUpdatingRef.current = true;
-        setFavorites(stored);
-        setTimeout(() => {
-          isUpdatingRef.current = false;
-        }, 100);
+    // Only fires for changes made in *other* tabs — never self-triggered,
+    // so there is no feedback loop to guard against.
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === FAVORITES_KEY) {
+        setFavorites(getFavoritesFromStorage());
       }
     };
 
     window.addEventListener("storage", handleStorageChange);
-    window.addEventListener("favorites-changed", handleCustomStorageChange);
-
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener(
-        "favorites-changed",
-        handleCustomStorageChange,
-      );
-    };
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  // Save favorites to localStorage whenever they change
-  useEffect(() => {
-    if (typeof window === "undefined" || isUpdatingRef.current) return;
-
-    const currentStored = getFavoritesFromStorage();
-    // Only save and dispatch if favorites actually changed
-    if (JSON.stringify(currentStored) !== JSON.stringify(favorites)) {
-      localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
-      // Dispatch custom event to notify other components in the same tab
-      // Use requestAnimationFrame to avoid infinite loops
-      requestAnimationFrame(() => {
-        if (!isUpdatingRef.current) {
-          window.dispatchEvent(new Event("favorites-changed"));
-        }
-      });
-    }
-  }, [favorites]);
-
+  // Persist synchronously on each change so nothing can be lost to a race.
   const toggleFavorite = useCallback((sessionId: string) => {
     setFavorites((prev) => {
-      if (prev.includes(sessionId)) {
-        return prev.filter((id) => id !== sessionId);
-      } else {
-        return [...prev, sessionId];
-      }
+      const next = prev.includes(sessionId)
+        ? prev.filter((id) => id !== sessionId)
+        : [...prev, sessionId];
+      saveFavoritesToStorage(next);
+      return next;
     });
   }, []);
 
   const isFavorite = useCallback(
-    (sessionId: string) => {
-      return favorites.includes(sessionId);
-    },
+    (sessionId: string) => favorites.includes(sessionId),
     [favorites],
   );
 

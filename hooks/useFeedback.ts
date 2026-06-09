@@ -16,9 +16,9 @@ function getFeedbackFromStorage(): string[] {
 }
 
 export function useFeedback() {
-  const [submittedSessions, setSubmittedSessions] = useState<string[]>(() =>
-    getFeedbackFromStorage(),
-  );
+  // Start empty to avoid a hydration mismatch, then load from localStorage
+  // in the mount effect below (same pattern as useEventFeedback).
+  const [submittedSessions, setSubmittedSessions] = useState<string[]>([]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;

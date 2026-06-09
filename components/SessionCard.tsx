@@ -7,6 +7,14 @@ import {
   getSessionVariant,
   type SessionVariant,
 } from "@/lib/utils";
+import { SpeakerAvatars } from "./SpeakerAvatars";
+
+/** Picks a fitting emoji for a break/lunch card based on its title. */
+function getBreakEmoji(title: string): string {
+  const normalized = title.toLowerCase();
+  if (normalized.includes("lunsj")) return "🍽️";
+  return "☕";
+}
 
 interface SessionCardProps {
   session: Session;
@@ -65,6 +73,7 @@ export function SessionCard({
     return (
       <div className="rounded-xl bg-spk-navy-deep px-4 py-3 text-center sm:py-4">
         <p className="text-base font-bold text-white sm:text-lg">
+          <span aria-hidden="true">{getBreakEmoji(session.title)}</span>{" "}
           {session.title}
         </p>
         <p className="mt-1 text-sm text-white/90">
@@ -93,58 +102,67 @@ export function SessionCard({
       )}
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0 flex-1">
-          <div className="mb-2 flex flex-wrap items-center gap-2">
-            <span
+        <div className="flex min-w-0 flex-1 gap-3 sm:gap-4">
+          {session.speaker && (
+            <SpeakerAvatars
+              speaker={session.speaker}
+              onHighlight={highlighted}
+            />
+          )}
+
+          <div className="min-w-0 flex-1">
+            <div className="mb-2 flex flex-wrap items-center gap-2">
+              <span
+                className={cn(
+                  "shrink-0 text-sm font-bold sm:text-base",
+                  highlighted ? "spk-text-on-light" : "text-spk-navy",
+                )}
+              >
+                {formatTimeRange(startTime, endTime)}
+              </span>
+              {status === "current" && (
+                <span className="whitespace-nowrap rounded-full bg-spk-navy px-2 py-0.5 text-xs font-bold text-white">
+                  Nå
+                </span>
+              )}
+            </div>
+
+            <h3
               className={cn(
-                "shrink-0 text-sm font-bold sm:text-base",
+                "mb-2 break-words text-base font-bold sm:text-lg",
                 highlighted ? "spk-text-on-light" : "text-spk-navy",
               )}
             >
-              {formatTimeRange(startTime, endTime)}
-            </span>
-            {status === "current" && (
-              <span className="whitespace-nowrap rounded-full bg-spk-navy px-2 py-0.5 text-xs font-bold text-white">
-                Nå
-              </span>
+              {session.title || "Ingen tittel"}
+            </h3>
+
+            {session.speaker && (
+              <p
+                className={cn(
+                  "mb-2 break-words text-sm",
+                  highlighted ? "spk-text-on-light-muted" : "text-spk-navy/80",
+                )}
+              >
+                <span className="font-semibold">Foredragsholder:</span>{" "}
+                {session.speaker}
+              </p>
+            )}
+
+            <div className="mb-2">
+              <RoomBadge room={session.room} onHighlight={highlighted} />
+            </div>
+
+            {session.description && (
+              <p
+                className={cn(
+                  "break-words text-sm",
+                  highlighted ? "spk-text-on-light-muted" : "text-spk-navy/80",
+                )}
+              >
+                {session.description}
+              </p>
             )}
           </div>
-
-          <h3
-            className={cn(
-              "mb-2 break-words text-base font-bold sm:text-lg",
-              highlighted ? "spk-text-on-light" : "text-spk-navy",
-            )}
-          >
-            {session.title || "Ingen tittel"}
-          </h3>
-
-          {session.speaker && (
-            <p
-              className={cn(
-                "mb-2 break-words text-sm",
-                highlighted ? "spk-text-on-light-muted" : "text-spk-navy/80",
-              )}
-            >
-              <span className="font-semibold">Foredragsholder:</span>{" "}
-              {session.speaker}
-            </p>
-          )}
-
-          <div className="mb-2">
-            <RoomBadge room={session.room} onHighlight={highlighted} />
-          </div>
-
-          {session.description && (
-            <p
-              className={cn(
-                "break-words text-sm",
-                highlighted ? "spk-text-on-light-muted" : "text-spk-navy/80",
-              )}
-            >
-              {session.description}
-            </p>
-          )}
         </div>
 
         <div className="flex flex-row gap-2 sm:flex-col sm:shrink-0">

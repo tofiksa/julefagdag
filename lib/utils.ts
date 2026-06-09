@@ -77,7 +77,7 @@ export type SessionVariant =
 export function getSessionVariant(session: Session): SessionVariant {
   const title = (session.title || "").toLowerCase();
 
-  if (/pause|lunsj/.test(title)) {
+  if (/pause|lunsj|Luuuuuunsj/.test(title)) {
     return "break";
   }
   if (/house of nerds|nerds/.test(title)) {
@@ -97,6 +97,7 @@ export function isLogisticsSession(session: Session): boolean {
   return (
     title.includes("oppmøte") ||
     title.includes("velkommen") ||
+    title.includes("luuuuuunsj") ||
     /house of nerds|nerds/.test(title) ||
     title.includes("middag") ||
     title.includes("avslutning")

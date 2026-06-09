@@ -8,7 +8,11 @@ import { FeedbackForm } from "@/components/FeedbackForm";
 import { SessionCard } from "@/components/SessionCard";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useFeedback } from "@/hooks/useFeedback";
-import { groupSessionsByStatus, sortSessionsByTime } from "@/lib/utils";
+import {
+  groupSessionsByStatus,
+  isLogisticsSession,
+  sortSessionsByTime,
+} from "@/lib/utils";
 
 export default function FavoritesPage() {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -16,7 +20,7 @@ export default function FavoritesPage() {
   const [error, setError] = useState<string | null>(null);
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
   const [feedbackSession, setFeedbackSession] = useState<Session | null>(null);
-  const { favorites, toggleFavorite } = useFavorites();
+  const { favorites, toggleFavorite, removeFavorites } = useFavorites();
   const { hasSubmittedFeedback, markAsSubmitted } = useFeedback();
 
   useEffect(() => {
@@ -60,8 +64,17 @@ export default function FavoritesPage() {
     return () => clearInterval(refreshInterval);
   }, []);
 
-  const favoriteSessions = sessions.filter((session) =>
-    favorites.includes(session.id),
+  useEffect(() => {
+    if (sessions.length === 0) return;
+
+    const logisticsIds = sessions
+      .filter(isLogisticsSession)
+      .map((session) => session.id);
+    removeFavorites(logisticsIds);
+  }, [sessions, removeFavorites]);
+
+  const favoriteSessions = sessions.filter(
+    (session) => favorites.includes(session.id) && !isLogisticsSession(session),
   );
 
   const sortedFavorites = sortSessionsByTime(
@@ -86,23 +99,37 @@ export default function FavoritesPage() {
           {title} ({groupSessions.length})
         </h2>
         <div className="space-y-3 sm:space-y-4">
-          {groupSessions.map((session, i) => (
-            <SessionCard
-              key={session.id}
-              session={session}
-              currentTime={currentTime ?? undefined}
-              index={startIndex + i}
-              isFavorite={true}
-              hasSubmittedFeedback={hasSubmittedFeedback(session.id)}
-              onFavoriteToggle={toggleFavorite}
-              onFeedbackClick={(sessionId) => {
-                const session = sessions.find((s) => s.id === sessionId);
-                if (session && !hasSubmittedFeedback(sessionId)) {
-                  setFeedbackSession(session);
+          {groupSessions.map((session, i) => {
+            const interactive = !isLogisticsSession(session);
+
+            return (
+              <SessionCard
+                key={session.id}
+                session={session}
+                currentTime={currentTime ?? undefined}
+                index={startIndex + i}
+                isFavorite={true}
+                hasSubmittedFeedback={hasSubmittedFeedback(session.id)}
+                onFavoriteToggle={interactive ? toggleFavorite : undefined}
+                onFeedbackClick={
+                  interactive
+                    ? (sessionId) => {
+                        const session = sessions.find(
+                          (s) => s.id === sessionId,
+                        );
+                        if (
+                          session &&
+                          !isLogisticsSession(session) &&
+                          !hasSubmittedFeedback(sessionId)
+                        ) {
+                          setFeedbackSession(session);
+                        }
+                      }
+                    : undefined
                 }
-              }}
-            />
-          ))}
+              />
+            );
+          })}
         </div>
       </section>
     );

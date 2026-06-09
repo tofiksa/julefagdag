@@ -90,6 +90,19 @@ export function getSessionVariant(session: Session): SessionVariant {
   return "default";
 }
 
+/** Logistics / framing sessions — no favorite star or per-session feedback. */
+export function isLogisticsSession(session: Session): boolean {
+  const title = (session.title || "").toLowerCase();
+
+  return (
+    title.includes("oppmøte") ||
+    title.includes("velkommen") ||
+    /house of nerds|nerds/.test(title) ||
+    title.includes("middag") ||
+    title.includes("avslutning")
+  );
+}
+
 export type RoomBadgeVariant = "scenen" | "pokalen" | "other";
 
 export function getRoomBadgeVariant(room: string): RoomBadgeVariant {

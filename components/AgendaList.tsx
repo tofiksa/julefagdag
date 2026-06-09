@@ -1,7 +1,11 @@
 "use client";
 
 import type { Session } from "@prisma/client";
-import { groupSessionsByStatus, sortSessionsByTime } from "@/lib/utils";
+import {
+  groupSessionsByStatus,
+  isLogisticsSession,
+  sortSessionsByTime,
+} from "@/lib/utils";
 import { SessionCard } from "./SessionCard";
 
 interface AgendaListProps {
@@ -38,18 +42,22 @@ function SessionGroup({
     <section>
       <h2 className="spk-section-bar">{title}</h2>
       <div className="space-y-3 sm:space-y-4">
-        {sessions.map((session, i) => (
-          <SessionCard
-            key={session.id}
-            session={session}
-            currentTime={currentTime}
-            index={startIndex + i}
-            isFavorite={favorites.includes(session.id)}
-            hasSubmittedFeedback={hasSubmittedFeedback?.(session.id) ?? false}
-            onFavoriteToggle={onFavoriteToggle}
-            onFeedbackClick={onFeedbackClick}
-          />
-        ))}
+        {sessions.map((session, i) => {
+          const interactive = !isLogisticsSession(session);
+
+          return (
+            <SessionCard
+              key={session.id}
+              session={session}
+              currentTime={currentTime}
+              index={startIndex + i}
+              isFavorite={favorites.includes(session.id)}
+              hasSubmittedFeedback={hasSubmittedFeedback?.(session.id) ?? false}
+              onFavoriteToggle={interactive ? onFavoriteToggle : undefined}
+              onFeedbackClick={interactive ? onFeedbackClick : undefined}
+            />
+          );
+        })}
       </div>
     </section>
   );

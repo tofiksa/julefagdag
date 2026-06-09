@@ -63,9 +63,22 @@ export function useFavorites() {
     [favorites],
   );
 
+  const removeFavorites = useCallback((sessionIds: string[]) => {
+    if (sessionIds.length === 0) return;
+
+    setFavorites((prev) => {
+      const removeSet = new Set(sessionIds);
+      const next = prev.filter((id) => !removeSet.has(id));
+      if (next.length === prev.length) return prev;
+      saveFavoritesToStorage(next);
+      return next;
+    });
+  }, []);
+
   return {
     favorites,
     toggleFavorite,
     isFavorite,
+    removeFavorites,
   };
 }

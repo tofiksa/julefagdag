@@ -1,4 +1,5 @@
 import type { Session } from "@prisma/client";
+import { getSessionMap } from "@/lib/session-maps";
 import {
   cn,
   formatTimeRange,
@@ -68,6 +69,7 @@ export function SessionCard({
   const highlighted = isHighlightedVariant(variant);
   const startTime = new Date(session.startTime);
   const endTime = new Date(session.endTime);
+  const sessionMap = getSessionMap(session.title);
 
   if (variant === "break") {
     return (
@@ -161,6 +163,30 @@ export function SessionCard({
               >
                 {session.description}
               </p>
+            )}
+
+            {sessionMap && (
+              <div className="mt-3 overflow-hidden rounded-lg border border-spk-navy/10">
+                <iframe
+                  src={sessionMap.embedUrl}
+                  title={`Kart til ${sessionMap.label}`}
+                  className="h-48 w-full border-0 sm:h-56"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+                <a
+                  href={sessionMap.mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(
+                    "block px-3 py-2 text-center text-sm font-medium underline-offset-2 hover:underline",
+                    highlighted ? "spk-text-on-light" : "text-spk-navy",
+                  )}
+                >
+                  Åpne {sessionMap.label} i Google Maps
+                </a>
+              </div>
             )}
           </div>
         </div>

@@ -13,7 +13,7 @@ import { useEventFeedback } from "@/hooks/useEventFeedback";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useFeedback } from "@/hooks/useFeedback";
 import { useNotifications } from "@/hooks/useNotifications";
-import { isEventFeedbackAvailable } from "@/lib/utils";
+import { isEventFeedbackAvailable, isLogisticsSession } from "@/lib/utils";
 
 export default function Home() {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -22,7 +22,7 @@ export default function Home() {
   const [feedbackSession, setFeedbackSession] = useState<Session | null>(null);
   const [currentTime, setCurrentTime] = useState<Date | null>(null);
   const [showEventFeedback, setShowEventFeedback] = useState(false);
-  const { favorites, toggleFavorite } = useFavorites();
+  const { favorites, toggleFavorite, removeFavorites } = useFavorites();
   const { hasSubmittedFeedback, markAsSubmitted } = useFeedback();
   const {
     hasSubmittedEventFeedback,
@@ -86,6 +86,15 @@ export default function Home() {
 
     return () => clearInterval(refreshInterval);
   }, []);
+
+  useEffect(() => {
+    if (sessions.length === 0) return;
+
+    const logisticsIds = sessions
+      .filter(isLogisticsSession)
+      .map((session) => session.id);
+    removeFavorites(logisticsIds);
+  }, [sessions, removeFavorites]);
 
   const handleFeedbackSubmit = async (feedback: {
     sessionId: string;
@@ -199,7 +208,11 @@ export default function Home() {
               onFavoriteToggle={toggleFavorite}
               onFeedbackClick={(sessionId) => {
                 const session = sessions.find((s) => s.id === sessionId);
-                if (session && !hasSubmittedFeedback(sessionId)) {
+                if (
+                  session &&
+                  !isLogisticsSession(session) &&
+                  !hasSubmittedFeedback(sessionId)
+                ) {
                   setFeedbackSession(session);
                 }
               }}

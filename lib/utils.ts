@@ -105,6 +105,38 @@ export function getRoomBadgeVariant(room: string): RoomBadgeVariant {
   return "other";
 }
 
+/** When event-wide feedback becomes available (after «Avslutning»). */
+export function getEventFeedbackStartTime(
+  sessions: Session[],
+): Date | null {
+  const override = process.env.NEXT_PUBLIC_EVENT_FEEDBACK_START;
+  if (override) {
+    return new Date(override);
+  }
+
+  const avslutning = sessions.find((session) =>
+    (session.title || "").toLowerCase().includes("avslutning"),
+  );
+
+  if (avslutning) {
+    return new Date(avslutning.endTime);
+  }
+
+  return null;
+}
+
+export function isEventFeedbackAvailable(
+  sessions: Session[],
+  currentTime: Date = new Date(),
+): boolean {
+  const startTime = getEventFeedbackStartTime(sessions);
+  if (!startTime) {
+    return false;
+  }
+
+  return currentTime >= startTime;
+}
+
 export function groupSessionsByStatus(
   sessions: Session[],
   currentTime: Date = new Date(),

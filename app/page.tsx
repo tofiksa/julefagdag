@@ -12,6 +12,7 @@ import { useFavorites } from "@/hooks/useFavorites";
 import { useFeedback } from "@/hooks/useFeedback";
 import { useEventFeedback } from "@/hooks/useEventFeedback";
 import { useNotifications } from "@/hooks/useNotifications";
+import { isEventFeedbackAvailable } from "@/lib/utils";
 
 export default function Home() {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -28,10 +29,15 @@ export default function Home() {
   } = useEventFeedback();
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setShowEventFeedback(!hasSubmittedEventFeedback);
+    if (typeof window === "undefined" || !currentTime || sessions.length === 0) {
+      return;
     }
-  }, [hasSubmittedEventFeedback]);
+
+    setShowEventFeedback(
+      !hasSubmittedEventFeedback &&
+        isEventFeedbackAvailable(sessions, currentTime),
+    );
+  }, [hasSubmittedEventFeedback, currentTime, sessions]);
 
   useEffect(() => {
     setCurrentTime(new Date());

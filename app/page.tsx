@@ -1,16 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
 import type { Session } from "@prisma/client";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { AgendaList } from "@/components/AgendaList";
 import { AppHeader, EventTitle, SpkFooter } from "@/components/AppHeader";
-import { FeedbackForm } from "@/components/FeedbackForm";
 import { EventFeedbackForm } from "@/components/EventFeedbackForm";
+import { FeedbackForm } from "@/components/FeedbackForm";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import { NotificationBanner } from "@/components/NotificationBanner";
+import { useEventFeedback } from "@/hooks/useEventFeedback";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useFeedback } from "@/hooks/useFeedback";
-import { useEventFeedback } from "@/hooks/useEventFeedback";
 import { useNotifications } from "@/hooks/useNotifications";
 import { isEventFeedbackAvailable } from "@/lib/utils";
 
@@ -29,7 +30,11 @@ export default function Home() {
   } = useEventFeedback();
 
   useEffect(() => {
-    if (typeof window === "undefined" || !currentTime || sessions.length === 0) {
+    if (
+      typeof window === "undefined" ||
+      !currentTime ||
+      sessions.length === 0
+    ) {
       return;
     }
 
@@ -172,6 +177,8 @@ export default function Home() {
         {!loading && !error && currentTime && (
           <>
             <NotificationBanner sessions={sessions} currentTime={currentTime} />
+
+            <InstallPrompt />
 
             {showEventFeedback && (
               <div className="mb-6">

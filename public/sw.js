@@ -1,32 +1,52 @@
 // Service Worker for Julefagdag PWA
-const CACHE_NAME = "julefagdag-v2";
-const RUNTIME_CACHE = "julefagdag-runtime-v2";
+const CACHE_NAME = "julefagdag-v3";
+const RUNTIME_CACHE = "julefagdag-runtime-v3";
 const API_CACHE_MAX_AGE = 30000; // 30 seconds for API responses
+const OFFLINE_URL = "/offline";
 
 // Install event - cache essential resources
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(["/", "/favorites", "/manifest.json"]);
+      return cache.addAll(["/", "/favorites", "/offline", "/manifest.json"]);
     }),
   );
   self.skipWaiting();
 });
 
+// Allow the page to trigger an immediate activation of a waiting worker
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
+});
+
 // Activate event - clean up old caches
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames
-          .filter((cacheName) => {
-            return cacheName !== CACHE_NAME && cacheName !== RUNTIME_CACHE;
-          })
-          .map((cacheName) => caches.delete(cacheName)),
-      );
-    }),
+    caches
+      .keys()
+      .then((cacheNames) => {
+        return Promise.all(
+          cacheNames
+            .filter((cacheName) => {
+              return cacheName !== CACHE_NAME && cacheName !== RUNTIME_CACHE;
+            })
+            .map((cacheName) => caches.delete(cacheName)),
+        );
+      })
+      .then(() => self.clients.claim())
+      .then(() => {
+        // Tell open clients a new version is now controlling them
+        return self.clients
+          .matchAll({ type: "window", includeUncontrolled: true })
+          .then((clientList) => {
+            for (const client of clientList) {
+              client.postMessage({ type: "SW_UPDATED" });
+            }
+          });
+      }),
   );
-  return self.clients.claim();
 });
 
 // Check if response is still fresh
@@ -115,25 +135,33 @@ self.addEventListener("fetch", (event) => {
           return cachedResponse;
         }
 
-        return fetch(event.request).then((response) => {
-          // Don't cache non-successful responses
-          if (
-            !response ||
-            response.status !== 200 ||
-            response.type !== "basic"
-          ) {
+        return fetch(event.request)
+          .then((response) => {
+            // Don't cache non-successful responses
+            if (
+              !response ||
+              response.status !== 200 ||
+              response.type !== "basic"
+            ) {
+              return response;
+            }
+
+            // Clone the response
+            const responseToCache = response.clone();
+
+            caches.open(RUNTIME_CACHE).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+
             return response;
-          }
-
-          // Clone the response
-          const responseToCache = response.clone();
-
-          caches.open(RUNTIME_CACHE).then((cache) => {
-            cache.put(event.request, responseToCache);
+          })
+          .catch(() => {
+            // For page navigations that fail offline, show the offline page
+            if (event.request.mode === "navigate") {
+              return caches.match(OFFLINE_URL);
+            }
+            return Response.error();
           });
-
-          return response;
-        });
       }),
     );
   }

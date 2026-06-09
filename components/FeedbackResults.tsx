@@ -40,6 +40,17 @@ interface FeedbackResultsProps {
   results: SessionFeedbackResult[];
 }
 
+function StatBox({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="spk-admin-stat">
+      <div className="text-sm font-semibold spk-text-on-light-muted">
+        {label}
+      </div>
+      <div className="mt-1 text-2xl font-bold spk-text-on-light">{value}</div>
+    </div>
+  );
+}
+
 export function FeedbackResults({ results }: FeedbackResultsProps) {
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
     null,
@@ -68,13 +79,14 @@ export function FeedbackResults({ results }: FeedbackResultsProps) {
       <div className="space-y-6">
         <button
           onClick={() => setSelectedSessionId(null)}
-          className="flex items-center gap-2 text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+          className="flex items-center gap-2 font-medium text-spk-gold-bright hover:text-white"
         >
           <svg
             className="h-5 w-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -86,17 +98,19 @@ export function FeedbackResults({ results }: FeedbackResultsProps) {
           Tilbake til oversikt
         </button>
 
-        <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
-          <h2 className="mb-2 text-2xl font-bold text-gray-900 dark:text-gray-100">
+        <div className="spk-admin-panel">
+          <h2 className="mb-2 text-2xl font-bold spk-text-on-light">
             {selectedResult.session.title}
           </h2>
           {selectedResult.session.speaker && (
-            <p className="mb-1 text-gray-600 dark:text-gray-400">
-              <span className="font-medium">Foredragsholder:</span>{" "}
+            <p className="mb-1 spk-form-hint">
+              <span className="font-semibold spk-text-on-light">
+                Foredragsholder:
+              </span>{" "}
               {selectedResult.session.speaker}
             </p>
           )}
-          <p className="mb-4 text-sm text-gray-500 dark:text-gray-500">
+          <p className="mb-4 spk-form-meta">
             {formatDate(selectedResult.session.startTime)} kl.{" "}
             {formatTime(selectedResult.session.startTime)} -{" "}
             {formatTime(selectedResult.session.endTime)} •{" "}
@@ -104,107 +118,73 @@ export function FeedbackResults({ results }: FeedbackResultsProps) {
           </p>
 
           {selectedResult.statistics.totalFeedback === 0 ? (
-            <div className="rounded-lg bg-gray-50 p-6 text-center text-gray-600 dark:bg-gray-700 dark:text-gray-400">
+            <div className="rounded-xl bg-spk-cream p-6 text-center spk-form-hint">
               Ingen tilbakemeldinger mottatt for dette foredraget
             </div>
           ) : (
             <div className="space-y-6">
-              {/* Statistics Overview */}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
-                  <div className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                    Totalt antall
-                  </div>
-                  <div className="mt-1 text-2xl font-bold text-blue-900 dark:text-blue-100">
-                    {selectedResult.statistics.totalFeedback}
-                  </div>
-                </div>
-                <div className="rounded-lg bg-green-50 p-4 dark:bg-green-900/20">
-                  <div className="text-sm font-medium text-green-600 dark:text-green-400">
-                    Nyttig
-                  </div>
-                  <div className="mt-1 text-2xl font-bold text-green-900 dark:text-green-100">
-                    {selectedResult.statistics.usefulCount} (
-                    {selectedResult.statistics.usefulPercentage}%)
-                  </div>
-                </div>
-                <div className="rounded-lg bg-purple-50 p-4 dark:bg-purple-900/20">
-                  <div className="text-sm font-medium text-purple-600 dark:text-purple-400">
-                    Lært noe
-                  </div>
-                  <div className="mt-1 text-2xl font-bold text-purple-900 dark:text-purple-100">
-                    {selectedResult.statistics.learnedCount} (
-                    {selectedResult.statistics.learnedPercentage}%)
-                  </div>
-                </div>
+                <StatBox
+                  label="Totalt antall"
+                  value={selectedResult.statistics.totalFeedback}
+                />
+                <StatBox
+                  label="Nyttig"
+                  value={`${selectedResult.statistics.usefulCount} (${selectedResult.statistics.usefulPercentage}%)`}
+                />
+                <StatBox
+                  label="Lært noe"
+                  value={`${selectedResult.statistics.learnedCount} (${selectedResult.statistics.learnedPercentage}%)`}
+                />
               </div>
 
-              {/* Detailed Breakdown */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                <h3 className="text-lg font-semibold spk-text-on-light">
                   Detaljert oversikt
                 </h3>
 
                 <div className="space-y-3">
-                  <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
-                    <div className="mb-2 flex items-center justify-between">
-                      <span className="font-medium text-gray-700 dark:text-gray-300">
-                        Fikk noe nyttig ut av foredraget
-                      </span>
-                      <span className="text-sm text-gray-500 dark:text-gray-400">
-                        {selectedResult.statistics.usefulCount} av{" "}
-                        {selectedResult.statistics.totalFeedback}
-                      </span>
+                  {[
+                    {
+                      label: "Fikk noe nyttig ut av foredraget",
+                      count: selectedResult.statistics.usefulCount,
+                      pct: selectedResult.statistics.usefulPercentage,
+                      bar: "bg-spk-navy",
+                    },
+                    {
+                      label: "Lærte noe nytt",
+                      count: selectedResult.statistics.learnedCount,
+                      pct: selectedResult.statistics.learnedPercentage,
+                      bar: "bg-spk-gold",
+                    },
+                    {
+                      label: "Vil utforske videre",
+                      count: selectedResult.statistics.exploreCount,
+                      pct: selectedResult.statistics.explorePercentage,
+                      bar: "bg-spk-coral",
+                    },
+                  ].map((item) => (
+                    <div
+                      key={item.label}
+                      className="rounded-xl border border-spk-navy/10 bg-spk-cream p-4"
+                    >
+                      <div className="mb-2 flex items-center justify-between gap-2">
+                        <span className="font-semibold spk-text-on-light">
+                          {item.label}
+                        </span>
+                        <span className="shrink-0 spk-form-meta">
+                          {item.count} av{" "}
+                          {selectedResult.statistics.totalFeedback}
+                        </span>
+                      </div>
+                      <div className="h-2 overflow-hidden rounded-full bg-white">
+                        <div
+                          className={`h-full ${item.bar} transition-all`}
+                          style={{ width: `${item.pct}%` }}
+                        />
+                      </div>
                     </div>
-                    <div className="h-2 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-                      <div
-                        className="h-full bg-green-500 transition-all"
-                        style={{
-                          width: `${selectedResult.statistics.usefulPercentage}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
-                    <div className="mb-2 flex items-center justify-between">
-                      <span className="font-medium text-gray-700 dark:text-gray-300">
-                        Lærte noe nytt
-                      </span>
-                      <span className="text-sm text-gray-500 dark:text-gray-400">
-                        {selectedResult.statistics.learnedCount} av{" "}
-                        {selectedResult.statistics.totalFeedback}
-                      </span>
-                    </div>
-                    <div className="h-2 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-                      <div
-                        className="h-full bg-blue-500 transition-all"
-                        style={{
-                          width: `${selectedResult.statistics.learnedPercentage}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
-                    <div className="mb-2 flex items-center justify-between">
-                      <span className="font-medium text-gray-700 dark:text-gray-300">
-                        Vil utforske videre
-                      </span>
-                      <span className="text-sm text-gray-500 dark:text-gray-400">
-                        {selectedResult.statistics.exploreCount} av{" "}
-                        {selectedResult.statistics.totalFeedback}
-                      </span>
-                    </div>
-                    <div className="h-2 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-                      <div
-                        className="h-full bg-purple-500 transition-all"
-                        style={{
-                          width: `${selectedResult.statistics.explorePercentage}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -216,12 +196,12 @@ export function FeedbackResults({ results }: FeedbackResultsProps) {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+      <h2 className="text-2xl font-bold text-white">
         Tilbakemeldinger per foredrag
       </h2>
 
       {results.length === 0 ? (
-        <div className="rounded-lg bg-gray-50 p-6 text-center text-gray-600 dark:bg-gray-700 dark:text-gray-400">
+        <div className="spk-admin-panel text-center spk-form-hint">
           Ingen foredrag funnet
         </div>
       ) : (
@@ -230,30 +210,30 @@ export function FeedbackResults({ results }: FeedbackResultsProps) {
             <button
               key={result.session.id}
               onClick={() => setSelectedSessionId(result.session.id)}
-              className="w-full rounded-lg border border-gray-200 bg-white p-4 text-left transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+              className="spk-admin-panel w-full text-left transition-colors hover:bg-spk-cream"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900 dark:text-gray-100">
+                  <h3 className="font-semibold spk-text-on-light">
                     {result.session.title}
                   </h3>
                   {result.session.speaker && (
-                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    <p className="mt-1 spk-form-hint">
                       {result.session.speaker}
                     </p>
                   )}
-                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-500">
+                  <p className="mt-1 spk-form-meta">
                     {formatTime(result.session.startTime)} -{" "}
                     {formatTime(result.session.endTime)} • {result.session.room}
                   </p>
                 </div>
                 <div className="flex flex-col items-end gap-1">
-                  <div className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                  <div className="rounded-full bg-spk-navy px-3 py-1 text-sm font-semibold text-white">
                     {result.statistics.totalFeedback} tilbakemelding
                     {result.statistics.totalFeedback !== 1 ? "er" : ""}
                   </div>
                   {result.statistics.totalFeedback > 0 && (
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                    <div className="spk-form-meta">
                       {result.statistics.usefulPercentage}% nyttig
                     </div>
                   )}

@@ -1,17 +1,58 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import type { Session } from '@prisma/client'
-import { groupSessionsByStatus, sortSessionsByTime } from '@/lib/utils'
-import { SessionCard } from './SessionCard'
+import type { Session } from "@prisma/client";
+import { groupSessionsByStatus, sortSessionsByTime } from "@/lib/utils";
+import { SessionCard } from "./SessionCard";
 
 interface AgendaListProps {
-  sessions: Session[]
-  favorites?: string[]
-  onFavoriteToggle?: (sessionId: string) => void
-  onFeedbackClick?: (sessionId: string) => void
-  currentTime?: Date
-  hasSubmittedFeedback?: (sessionId: string) => boolean
+  sessions: Session[];
+  favorites?: string[];
+  onFavoriteToggle?: (sessionId: string) => void;
+  onFeedbackClick?: (sessionId: string) => void;
+  currentTime?: Date;
+  hasSubmittedFeedback?: (sessionId: string) => boolean;
+}
+
+function SessionGroup({
+  title,
+  sessions,
+  favorites,
+  currentTime,
+  hasSubmittedFeedback,
+  onFavoriteToggle,
+  onFeedbackClick,
+  startIndex,
+}: {
+  title: string;
+  sessions: Session[];
+  favorites: string[];
+  currentTime: Date;
+  hasSubmittedFeedback?: (sessionId: string) => boolean;
+  onFavoriteToggle?: (sessionId: string) => void;
+  onFeedbackClick?: (sessionId: string) => void;
+  startIndex: number;
+}) {
+  if (sessions.length === 0) return null;
+
+  return (
+    <section>
+      <h2 className="spk-section-bar">{title}</h2>
+      <div className="space-y-3 sm:space-y-4">
+        {sessions.map((session, i) => (
+          <SessionCard
+            key={session.id}
+            session={session}
+            currentTime={currentTime}
+            index={startIndex + i}
+            isFavorite={favorites.includes(session.id)}
+            hasSubmittedFeedback={hasSubmittedFeedback?.(session.id) ?? false}
+            onFavoriteToggle={onFavoriteToggle}
+            onFeedbackClick={onFeedbackClick}
+          />
+        ))}
+      </div>
+    </section>
+  );
 }
 
 export function AgendaList({
@@ -22,84 +63,52 @@ export function AgendaList({
   currentTime = new Date(),
   hasSubmittedFeedback,
 }: AgendaListProps) {
-
-  const sortedSessions = sortSessionsByTime(sessions, currentTime)
-  const { current, upcoming, completed } = groupSessionsByStatus(sortedSessions, currentTime)
+  const sortedSessions = sortSessionsByTime(sessions, currentTime);
+  const { current, upcoming, completed } = groupSessionsByStatus(
+    sortedSessions,
+    currentTime,
+  );
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      {/* Current Sessions */}
-      {current.length > 0 && (
-        <section>
-          <h2 className="mb-3 text-xl font-bold text-gray-900 dark:text-gray-100 sm:mb-4 sm:text-2xl">
-            Nå pågår
-          </h2>
-          <div className="space-y-3 sm:space-y-4">
-                      {current.map((session) => (
-                        <SessionCard
-                          key={session.id}
-                          session={session}
-                          currentTime={currentTime}
-                          isFavorite={favorites.includes(session.id)}
-                          hasSubmittedFeedback={hasSubmittedFeedback?.(session.id) ?? false}
-                          onFavoriteToggle={onFavoriteToggle}
-                          onFeedbackClick={onFeedbackClick}
-                        />
-                      ))}
-          </div>
-        </section>
-      )}
+      <SessionGroup
+        title="Nå pågår"
+        sessions={current}
+        favorites={favorites}
+        currentTime={currentTime}
+        hasSubmittedFeedback={hasSubmittedFeedback}
+        onFavoriteToggle={onFavoriteToggle}
+        onFeedbackClick={onFeedbackClick}
+        startIndex={0}
+      />
 
-      {/* Upcoming Sessions */}
-      {upcoming.length > 0 && (
-        <section>
-          <h2 className="mb-3 text-xl font-bold text-gray-900 dark:text-gray-100 sm:mb-4 sm:text-2xl">
-            Kommende
-          </h2>
-          <div className="space-y-3 sm:space-y-4">
-                      {upcoming.map((session) => (
-                        <SessionCard
-                          key={session.id}
-                          session={session}
-                          currentTime={currentTime}
-                          isFavorite={favorites.includes(session.id)}
-                          hasSubmittedFeedback={hasSubmittedFeedback?.(session.id) ?? false}
-                          onFavoriteToggle={onFavoriteToggle}
-                          onFeedbackClick={onFeedbackClick}
-                        />
-                      ))}
-          </div>
-        </section>
-      )}
+      <SessionGroup
+        title="Kommende"
+        sessions={upcoming}
+        favorites={favorites}
+        currentTime={currentTime}
+        hasSubmittedFeedback={hasSubmittedFeedback}
+        onFavoriteToggle={onFavoriteToggle}
+        onFeedbackClick={onFeedbackClick}
+        startIndex={current.length}
+      />
 
-      {/* Completed Sessions */}
-      {completed.length > 0 && (
-        <section>
-          <h2 className="mb-3 text-xl font-bold text-gray-900 dark:text-gray-100 sm:mb-4 sm:text-2xl">
-            Ferdig
-          </h2>
-          <div className="space-y-3 sm:space-y-4">
-                      {completed.map((session) => (
-                        <SessionCard
-                          key={session.id}
-                          session={session}
-                          currentTime={currentTime}
-                          isFavorite={favorites.includes(session.id)}
-                          hasSubmittedFeedback={hasSubmittedFeedback?.(session.id) ?? false}
-                          onFavoriteToggle={onFavoriteToggle}
-                          onFeedbackClick={onFeedbackClick}
-                        />
-                      ))}
-          </div>
-        </section>
-      )}
+      <SessionGroup
+        title="Ferdig"
+        sessions={completed}
+        favorites={favorites}
+        currentTime={currentTime}
+        hasSubmittedFeedback={hasSubmittedFeedback}
+        onFavoriteToggle={onFavoriteToggle}
+        onFeedbackClick={onFeedbackClick}
+        startIndex={current.length + upcoming.length}
+      />
 
       {sessions.length === 0 && (
-        <div className="rounded-lg border border-gray-200 bg-gray-50 p-8 text-center dark:border-gray-700 dark:bg-gray-800">
-          <p className="text-gray-600 dark:text-gray-400">Ingen sesjoner funnet.</p>
+        <div className="rounded-xl border border-white/10 bg-white/5 p-8 text-center">
+          <p className="text-white/70">Ingen sesjoner funnet.</p>
         </div>
       )}
     </div>
-  )
+  );
 }
-

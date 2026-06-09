@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { Session } from "@prisma/client";
+import { AppHeader, SpkFooter } from "@/components/AppHeader";
 import { SessionCard } from "@/components/SessionCard";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import { useFavorites } from "@/hooks/useFavorites";
@@ -18,14 +19,12 @@ export default function FavoritesPage() {
   const { favorites, toggleFavorite } = useFavorites();
   const { hasSubmittedFeedback, markAsSubmitted } = useFeedback();
 
-  // Initialize and update current time every minute
   useEffect(() => {
-    // Set initial time on client side only
     setCurrentTime(new Date());
 
     const interval = setInterval(() => {
       setCurrentTime(new Date());
-    }, 60000); // Update every minute
+    }, 60000);
 
     return () => clearInterval(interval);
   }, []);
@@ -54,7 +53,6 @@ export default function FavoritesPage() {
 
     fetchSessions();
 
-    // Refresh sessions every 30 seconds
     const refreshInterval = setInterval(() => {
       fetchSessions();
     }, 30000);
@@ -62,7 +60,6 @@ export default function FavoritesPage() {
     return () => clearInterval(refreshInterval);
   }, []);
 
-  // Filter sessions to only show favorites
   const favoriteSessions = sessions.filter((session) =>
     favorites.includes(session.id),
   );
@@ -76,36 +73,66 @@ export default function FavoritesPage() {
     currentTime ?? undefined,
   );
 
-  return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/80 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/80">
-        <div className="mx-auto max-w-4xl px-3 py-3 sm:px-4 sm:py-4">
-          <div className="flex items-center justify-between gap-2">
-            <h1 className="text-lg font-bold text-gray-900 dark:text-gray-100 sm:text-xl md:text-2xl truncate">
-              ⭐ Mine favoritter
-            </h1>
-            <Link
-              href="/"
-              className="rounded-lg px-3 py-2 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 sm:px-4 sm:text-sm min-h-[44px] whitespace-nowrap"
-            >
-              <span className="hidden sm:inline">← Tilbake til agenda</span>
-              <span className="sm:hidden">← Tilbake</span>
-            </Link>
-          </div>
-        </div>
-      </header>
+  const renderGroup = (
+    title: string,
+    groupSessions: Session[],
+    startIndex: number,
+  ) => {
+    if (groupSessions.length === 0) return null;
 
-      <main className="mx-auto max-w-4xl px-3 py-6 sm:px-4 sm:py-8">
+    return (
+      <section>
+        <h2 className="spk-section-bar">
+          {title} ({groupSessions.length})
+        </h2>
+        <div className="space-y-3 sm:space-y-4">
+          {groupSessions.map((session, i) => (
+            <SessionCard
+              key={session.id}
+              session={session}
+              currentTime={currentTime ?? undefined}
+              index={startIndex + i}
+              isFavorite={true}
+              hasSubmittedFeedback={hasSubmittedFeedback(session.id)}
+              onFavoriteToggle={toggleFavorite}
+              onFeedbackClick={(sessionId) => {
+                const session = sessions.find((s) => s.id === sessionId);
+                if (session && !hasSubmittedFeedback(sessionId)) {
+                  setFeedbackSession(session);
+                }
+              }}
+            />
+          ))}
+        </div>
+      </section>
+    );
+  };
+
+  return (
+    <div className="spk-page">
+      <AppHeader
+        title={
+          <h1 className="truncate text-lg font-black text-white sm:text-xl md:text-2xl">
+            ⭐ Mine favoritter
+          </h1>
+        }
+        actions={
+          <Link href="/" className="spk-nav-link">
+            <span className="hidden sm:inline">← Tilbake til agenda</span>
+            <span className="sm:hidden">← Tilbake</span>
+          </Link>
+        }
+      />
+
+      <main className="spk-main">
         {loading && (
           <div className="flex items-center justify-center py-12">
-            <div className="text-gray-600 dark:text-gray-400">
-              Laster favoritter...
-            </div>
+            <div className="text-white/70">Laster favoritter...</div>
           </div>
         )}
 
         {error && (
-          <div className="rounded-lg bg-red-50 p-4 text-red-600 dark:bg-red-900/20 dark:text-red-400">
+          <div className="rounded-xl bg-spk-red/20 p-4 text-spk-coral">
             {error}
           </div>
         )}
@@ -113,10 +140,10 @@ export default function FavoritesPage() {
         {!loading && !error && currentTime && (
           <>
             {favoriteSessions.length === 0 ? (
-              <div className="rounded-lg border border-gray-200 bg-white p-12 text-center dark:border-gray-700 dark:bg-gray-800">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700">
+              <div className="rounded-xl border border-white/10 bg-white/5 p-12 text-center">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-spk-gold/20">
                   <svg
-                    className="h-8 w-8 text-gray-400"
+                    className="h-8 w-8 text-spk-gold-bright"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -129,118 +156,35 @@ export default function FavoritesPage() {
                     />
                   </svg>
                 </div>
-                <h2 className="mb-2 text-xl font-semibold text-gray-900 dark:text-gray-100">
+                <h2 className="mb-2 text-xl font-bold text-white">
                   Ingen favoritter ennå
                 </h2>
-                <p className="mb-6 text-gray-600 dark:text-gray-400">
+                <p className="mb-6 text-white/70">
                   Merk foredrag som favoritter for å se dem her
                 </p>
                 <Link
                   href="/"
-                  className="inline-block rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition-colors hover:bg-blue-700"
+                  className="spk-btn-primary inline-block px-6 py-3"
                 >
                   Se agenda
                 </Link>
               </div>
             ) : (
               <div className="space-y-6 sm:space-y-8">
-                {/* Current Sessions */}
-                {current.length > 0 && (
-                  <section>
-                    <h2 className="mb-3 text-xl font-bold text-gray-900 dark:text-gray-100 sm:mb-4 sm:text-2xl">
-                      Nå pågår ({current.length})
-                    </h2>
-                    <div className="space-y-3 sm:space-y-4">
-                      {current.map((session) => (
-                        <SessionCard
-                          key={session.id}
-                          session={session}
-                          currentTime={currentTime}
-                          isFavorite={true}
-                          hasSubmittedFeedback={hasSubmittedFeedback(
-                            session.id,
-                          )}
-                          onFavoriteToggle={toggleFavorite}
-                          onFeedbackClick={(sessionId) => {
-                            const session = sessions.find(
-                              (s) => s.id === sessionId,
-                            );
-                            if (session && !hasSubmittedFeedback(sessionId)) {
-                              setFeedbackSession(session);
-                            }
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </section>
-                )}
-
-                {/* Upcoming Sessions */}
-                {upcoming.length > 0 && (
-                  <section>
-                    <h2 className="mb-3 text-xl font-bold text-gray-900 dark:text-gray-100 sm:mb-4 sm:text-2xl">
-                      Kommende ({upcoming.length})
-                    </h2>
-                    <div className="space-y-3 sm:space-y-4">
-                      {upcoming.map((session) => (
-                        <SessionCard
-                          key={session.id}
-                          session={session}
-                          currentTime={currentTime}
-                          isFavorite={true}
-                          hasSubmittedFeedback={hasSubmittedFeedback(
-                            session.id,
-                          )}
-                          onFavoriteToggle={toggleFavorite}
-                          onFeedbackClick={(sessionId) => {
-                            const session = sessions.find(
-                              (s) => s.id === sessionId,
-                            );
-                            if (session && !hasSubmittedFeedback(sessionId)) {
-                              setFeedbackSession(session);
-                            }
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </section>
-                )}
-
-                {/* Completed Sessions */}
-                {completed.length > 0 && (
-                  <section>
-                    <h2 className="mb-3 text-xl font-bold text-gray-900 dark:text-gray-100 sm:mb-4 sm:text-2xl">
-                      Ferdig ({completed.length})
-                    </h2>
-                    <div className="space-y-3 sm:space-y-4">
-                      {completed.map((session) => (
-                        <SessionCard
-                          key={session.id}
-                          session={session}
-                          currentTime={currentTime}
-                          isFavorite={true}
-                          hasSubmittedFeedback={hasSubmittedFeedback(
-                            session.id,
-                          )}
-                          onFavoriteToggle={toggleFavorite}
-                          onFeedbackClick={(sessionId) => {
-                            const session = sessions.find(
-                              (s) => s.id === sessionId,
-                            );
-                            if (session && !hasSubmittedFeedback(sessionId)) {
-                              setFeedbackSession(session);
-                            }
-                          }}
-                        />
-                      ))}
-                    </div>
-                  </section>
+                {renderGroup("Nå pågår", current, 0)}
+                {renderGroup("Kommende", upcoming, current.length)}
+                {renderGroup(
+                  "Ferdig",
+                  completed,
+                  current.length + upcoming.length,
                 )}
               </div>
             )}
           </>
         )}
       </main>
+
+      <SpkFooter />
 
       {feedbackSession && (
         <FeedbackForm
@@ -260,7 +204,6 @@ export default function FavoritesPage() {
               throw new Error("Kunne ikke sende tilbakemelding");
             }
 
-            // Mark as submitted after successful submission
             markAsSubmitted(feedback.sessionId);
           }}
         />

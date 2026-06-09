@@ -1,197 +1,185 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
+import { useState } from "react";
 
 interface EventFeedbackFormProps {
-  onSuccess?: () => void
-  onClose?: () => void
+  onSuccess?: () => void;
+  onClose?: () => void;
 }
 
-export function EventFeedbackForm({ onSuccess, onClose }: EventFeedbackFormProps) {
-  const [comment, setComment] = useState('')
-  const [rating, setRating] = useState<number | null>(null)
-  const [hoveredRating, setHoveredRating] = useState<number | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [isSuccess, setIsSuccess] = useState(false)
+export function EventFeedbackForm({
+  onSuccess,
+  onClose,
+}: EventFeedbackFormProps) {
+  const [comment, setComment] = useState("");
+  const [rating, setRating] = useState<number | null>(null);
+  const [hoveredRating, setHoveredRating] = useState<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
-    setIsSubmitting(true)
+    e.preventDefault();
+    setError(null);
+    setIsSubmitting(true);
 
-    // At least one of comment or rating must be provided
     if (!comment.trim() && !rating) {
-      setError('Vennligst gi enten en kommentar eller en vurdering')
-      setIsSubmitting(false)
-      return
+      setError("Vennligst gi enten en kommentar eller en vurdering");
+      setIsSubmitting(false);
+      return;
     }
 
     if (comment.trim() && comment.length > 1000) {
-      setError('Kommentaren kan ikke være lengre enn 1000 tegn')
-      setIsSubmitting(false)
-      return
+      setError("Kommentaren kan ikke være lengre enn 1000 tegn");
+      setIsSubmitting(false);
+      return;
     }
 
     try {
-      const response = await fetch('/api/event-feedback', {
-        method: 'POST',
+      const response = await fetch("/api/event-feedback", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           comment: comment.trim(),
           rating: rating || null,
         }),
-      })
+      });
 
       if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.error || 'Kunne ikke sende tilbakemelding')
+        const data = await response.json();
+        throw new Error(data.error || "Kunne ikke sende tilbakemelding");
       }
 
-      setIsSuccess(true)
-      setComment('')
-      setRating(null)
-      
-      // Call onSuccess callback after a short delay
+      setIsSuccess(true);
+      setComment("");
+      setRating(null);
+
       setTimeout(() => {
         if (onSuccess) {
-          onSuccess()
+          onSuccess();
         }
         if (onClose) {
-          onClose()
+          onClose();
         }
-      }, 2000)
+      }, 2000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Kunne ikke sende tilbakemelding')
+      setError(
+        err instanceof Error ? err.message : "Kunne ikke sende tilbakemelding",
+      );
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   if (isSuccess) {
     return (
-      <div className="rounded-lg bg-green-50 p-4 text-center dark:bg-green-900/20">
+      <div className="spk-form-success">
         <div className="flex items-center justify-center gap-2">
-          <svg
-            className="h-5 w-5 text-green-600 dark:text-green-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
-          <p className="text-green-800 dark:text-green-300">
+          <span className="text-xl" aria-hidden="true">
+            ⭐
+          </span>
+          <p className="font-semibold spk-text-on-light">
             Takk for tilbakemeldingen!
           </p>
         </div>
       </div>
-    )
+    );
   }
 
+  const activeRating = hoveredRating ?? rating;
+
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-      <h3 className="mb-3 text-lg font-semibold text-gray-900 dark:text-gray-100">
+    <div className="spk-form-surface">
+      <h3 className="mb-3 text-lg font-bold spk-text-on-light">
         💬 Gi tilbakemelding til hele fagdagen
       </h3>
-      <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-        Vi setter pris på din tilbakemelding! Del gjerne dine tanker om arrangementet.
+      <p className="mb-4 spk-form-hint">
+        Vi setter pris på din tilbakemelding! Del gjerne dine tanker om
+        arrangementet.
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Star Rating */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Vurder fagdagen (valgfritt)
-          </label>
-          <div className="flex items-center gap-1">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <button
-                key={star}
-                type="button"
-                onClick={() => {
-                  setRating(star)
-                  setError(null)
-                }}
-                onMouseEnter={() => setHoveredRating(star)}
-                onMouseLeave={() => setHoveredRating(null)}
-                className="focus:outline-none transition-transform hover:scale-110"
-                aria-label={`Gi ${star} ${star === 1 ? 'stjerne' : 'stjerner'}`}
-              >
-                <svg
-                  className={`h-8 w-8 ${
-                    (hoveredRating !== null && star <= hoveredRating) ||
-                    (hoveredRating === null && rating !== null && star <= rating!)
-                      ? 'text-yellow-400 fill-yellow-400'
-                      : 'text-gray-300 dark:text-gray-600'
-                  }`}
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
+          <span className="spk-form-label">Vurder fagdagen (valgfritt)</span>
+          <div className="mt-2 flex items-center gap-1">
+            {[1, 2, 3, 4, 5].map((star) => {
+              const filled = activeRating !== null && star <= activeRating;
+
+              return (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => {
+                    setRating(star);
+                    setError(null);
+                  }}
+                  onMouseEnter={() => setHoveredRating(star)}
+                  onMouseLeave={() => setHoveredRating(null)}
+                  className="rounded-md p-1 transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-spk-gold/40"
+                  aria-label={`Gi ${star} ${star === 1 ? "stjerne" : "stjerner"}`}
                 >
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg>
-              </button>
-            ))}
+                  <svg
+                    className={`h-8 w-8 ${
+                      filled
+                        ? "fill-spk-gold-bright text-spk-gold-bright"
+                        : "fill-spk-star-empty text-spk-star-empty"
+                    }`}
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                  </svg>
+                </button>
+              );
+            })}
             {rating && (
-              <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
-                {rating} {rating === 1 ? 'stjerne' : 'stjerner'}
+              <span className="ml-2 spk-form-hint">
+                {rating} {rating === 1 ? "stjerne" : "stjerner"}
               </span>
             )}
           </div>
         </div>
 
         <div>
-          <label
-            htmlFor="event-comment"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-          >
+          <label htmlFor="event-comment" className="spk-form-label">
             Din kommentar
           </label>
           <textarea
             id="event-comment"
             value={comment}
             onChange={(e) => {
-              setComment(e.target.value)
-              setError(null)
+              setComment(e.target.value);
+              setError(null);
             }}
             rows={4}
             maxLength={1000}
-            className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-400"
+            className="spk-form-input"
             placeholder="Skriv din tilbakemelding her (valgfritt)..."
             disabled={isSubmitting}
           />
-          <div className="mt-1 flex justify-between text-xs text-gray-500 dark:text-gray-400">
+          <div className="mt-1 spk-form-meta">
             <span>{comment.length} / 1000 tegn</span>
           </div>
         </div>
 
-        {error && (
-          <div className="rounded-md bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
-            {error}
-          </div>
-        )}
+        {error && <div className="spk-form-error">{error}</div>}
 
         <div className="flex gap-2">
           <button
             type="submit"
             disabled={isSubmitting || (!comment.trim() && !rating)}
-            className="flex-1 rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="spk-btn-primary flex-1 px-4 py-2"
           >
-            {isSubmitting ? 'Sender...' : 'Send tilbakemelding'}
+            {isSubmitting ? "Sender..." : "Send tilbakemelding"}
           </button>
           {onClose && (
             <button
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="rounded-md border border-gray-300 px-4 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+              className="rounded-lg border border-spk-navy/25 px-4 py-2 font-medium spk-text-on-light transition-colors hover:bg-spk-cream disabled:cursor-not-allowed disabled:text-spk-star-empty"
             >
               Avbryt
             </button>
@@ -199,6 +187,5 @@ export function EventFeedbackForm({ onSuccess, onClose }: EventFeedbackFormProps
         </div>
       </form>
     </div>
-  )
+  );
 }
-

@@ -1,13 +1,51 @@
-import type { Session } from '@prisma/client'
-import { formatTimeRange, getSessionStatus, cn } from '@/lib/utils'
+import type { Session } from "@prisma/client";
+import {
+  cn,
+  formatTimeRange,
+  getRoomBadgeVariant,
+  getSessionStatus,
+  getSessionVariant,
+  type SessionVariant,
+} from "@/lib/utils";
 
 interface SessionCardProps {
-  session: Session
-  currentTime?: Date
-  isFavorite?: boolean
-  hasSubmittedFeedback?: boolean
-  onFavoriteToggle?: (sessionId: string) => void
-  onFeedbackClick?: (sessionId: string) => void
+  session: Session;
+  currentTime?: Date;
+  isFavorite?: boolean;
+  hasSubmittedFeedback?: boolean;
+  index?: number;
+  onFavoriteToggle?: (sessionId: string) => void;
+  onFeedbackClick?: (sessionId: string) => void;
+}
+
+function isHighlightedVariant(variant: SessionVariant): boolean {
+  return variant === "highlight-gold" || variant === "highlight-coral";
+}
+
+function RoomBadge({
+  room,
+  onHighlight,
+}: {
+  room: string;
+  onHighlight: boolean;
+}) {
+  const variant = getRoomBadgeVariant(room);
+
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold",
+        onHighlight
+          ? "bg-spk-navy text-white"
+          : "text-white",
+        !onHighlight && variant === "pokalen" && "bg-spk-coral",
+        !onHighlight && variant === "scenen" && "bg-spk-navy",
+        !onHighlight && variant === "other" && "bg-spk-navy-deep",
+      )}
+    >
+      {room}
+    </span>
+  );
 }
 
 export function SessionCard({
@@ -15,75 +53,124 @@ export function SessionCard({
   currentTime = new Date(),
   isFavorite = false,
   hasSubmittedFeedback = false,
+  index = 0,
   onFavoriteToggle,
   onFeedbackClick,
 }: SessionCardProps) {
-  const status = getSessionStatus(session, currentTime)
-  const startTime = new Date(session.startTime)
-  const endTime = new Date(session.endTime)
+  const status = getSessionStatus(session, currentTime);
+  const variant = getSessionVariant(session);
+  const highlighted = isHighlightedVariant(variant);
+  const startTime = new Date(session.startTime);
+  const endTime = new Date(session.endTime);
+
+  if (variant === "break") {
+    return (
+      <div className="rounded-xl bg-spk-navy-deep px-4 py-3 text-center sm:py-4">
+        <p className="text-base font-bold text-white sm:text-lg">
+          {session.title}
+        </p>
+        <p className="mt-1 text-sm text-white/90">
+          {formatTimeRange(startTime, endTime)}
+          {session.description ? ` · ${session.description}` : ""}
+        </p>
+      </div>
+    );
+  }
+
+  const isEven = index % 2 === 0;
 
   return (
     <div
       className={cn(
-        'rounded-lg border p-3 transition-all sm:p-4',
-        status === 'current'
-          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950'
-          : status === 'upcoming'
-            ? 'border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800'
-            : 'border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-900',
-        'hover:shadow-md'
+        "rounded-xl border p-3 transition-all sm:p-4",
+        variant === "highlight-gold" && "spk-card-highlight-gold",
+        variant === "highlight-coral" && "spk-card-highlight-coral",
+        variant === "default" && isEven && "border-spk-navy/10 bg-spk-cream",
+        variant === "default" && !isEven && "border-spk-navy/10 bg-white",
+        status === "current" &&
+          variant === "default" &&
+          "border-spk-gold ring-2 ring-spk-gold/50",
+        status === "completed" && variant === "default" && "opacity-70",
+        "hover:shadow-md",
       )}
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="mb-2 flex flex-wrap items-center gap-2">
-            <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100 sm:text-lg break-words">
-              {session.title || 'Ingen tittel'}
-            </h3>
-            {status === 'current' && (
-              <span className="rounded-full bg-blue-500 px-2 py-1 text-xs font-medium text-white whitespace-nowrap">
+            <span
+              className={cn(
+                "shrink-0 text-sm font-bold sm:text-base",
+                highlighted ? "spk-text-on-light" : "text-spk-navy",
+              )}
+            >
+              {formatTimeRange(startTime, endTime)}
+            </span>
+            {status === "current" && (
+              <span className="whitespace-nowrap rounded-full bg-spk-navy px-2 py-0.5 text-xs font-bold text-white">
                 Nå
               </span>
             )}
           </div>
 
+          <h3
+            className={cn(
+              "mb-2 break-words text-base font-bold sm:text-lg",
+              highlighted ? "spk-text-on-light" : "text-spk-navy",
+            )}
+          >
+            {session.title || "Ingen tittel"}
+          </h3>
+
           {session.speaker && (
-            <p className="mb-1 text-sm text-gray-600 dark:text-gray-400 break-words">
-              <span className="font-medium">Foredragsholder:</span> {session.speaker}
+            <p
+              className={cn(
+                "mb-2 break-words text-sm",
+                highlighted ? "spk-text-on-light-muted" : "text-spk-navy/80",
+              )}
+            >
+              <span className="font-semibold">Foredragsholder:</span>{" "}
+              {session.speaker}
             </p>
           )}
 
-          <div className="mb-2 flex flex-col gap-2 text-sm text-gray-600 dark:text-gray-400 sm:flex-row sm:flex-wrap sm:gap-4">
-            <div className="flex-shrink-0">
-              <span className="font-medium">Tid:</span> {formatTimeRange(startTime, endTime)}
-            </div>
-            <div className="flex-shrink-0">
-              <span className="font-medium">Rom:</span> {session.room}
-            </div>
+          <div className="mb-2">
+            <RoomBadge room={session.room} onHighlight={highlighted} />
           </div>
 
           {session.description && (
-            <p className="text-sm text-gray-600 dark:text-gray-400 break-words">{session.description}</p>
+            <p
+              className={cn(
+                "break-words text-sm",
+                highlighted ? "spk-text-on-light-muted" : "text-spk-navy/80",
+              )}
+            >
+              {session.description}
+            </p>
           )}
         </div>
 
-        <div className="flex flex-row gap-2 sm:flex-col sm:flex-shrink-0">
+        <div className="flex flex-row gap-2 sm:flex-col sm:shrink-0">
           {onFavoriteToggle && (
             <button
               onClick={() => onFavoriteToggle(session.id)}
               className={cn(
-                'rounded-full p-2 transition-colors',
-                'hover:bg-gray-100 dark:hover:bg-gray-700',
-                'min-h-[44px] min-w-[44px]',
+                "min-h-[44px] min-w-[44px] rounded-full p-2 transition-colors",
+                highlighted
+                  ? "hover:bg-spk-navy/10"
+                  : "hover:bg-spk-navy/5",
                 isFavorite
-                  ? 'text-yellow-500'
-                  : 'text-gray-400 hover:text-yellow-500'
+                  ? "text-spk-navy"
+                  : highlighted
+                    ? "text-spk-navy/50 hover:text-spk-navy"
+                    : "text-spk-navy/30 hover:text-spk-gold-bright",
               )}
-              aria-label={isFavorite ? 'Fjern fra favoritter' : 'Legg til i favoritter'}
+              aria-label={
+                isFavorite ? "Fjern fra favoritter" : "Legg til i favoritter"
+              }
             >
               <svg
                 className="h-6 w-6"
-                fill={isFavorite ? 'currentColor' : 'none'}
+                fill={isFavorite ? "currentColor" : "none"}
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
@@ -97,20 +184,22 @@ export function SessionCard({
             </button>
           )}
 
-          {onFeedbackClick && status !== 'upcoming' && (
+          {onFeedbackClick && status !== "upcoming" && (
             <>
               {hasSubmittedFeedback ? (
                 <div
                   className={cn(
-                    'rounded-lg px-3 py-2 text-sm font-medium',
-                    'min-h-[44px] flex items-center justify-center',
-                    'text-green-600 border border-green-200 bg-green-50 dark:text-green-400 dark:border-green-700 dark:bg-green-900/20',
-                    'sm:px-4'
+                    "flex min-h-[44px] items-center justify-center rounded-lg border px-3 py-2 text-sm font-medium sm:px-4",
+                    highlighted
+                      ? "border-spk-navy/25 bg-white/60 spk-text-on-light"
+                      : "border-spk-gold/40 bg-spk-gold/10 text-spk-navy",
                   )}
                 >
                   <span className="flex items-center gap-1.5">
                     <span className="text-base">😊</span>
-                    <span className="hidden sm:inline">Tilbakemelding sendt</span>
+                    <span className="hidden sm:inline">
+                      Tilbakemelding sendt
+                    </span>
                     <span className="sm:hidden">Sendt</span>
                   </span>
                 </div>
@@ -118,17 +207,20 @@ export function SessionCard({
                 <button
                   onClick={() => onFeedbackClick(session.id)}
                   className={cn(
-                    'rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-                    'hover:bg-blue-50 dark:hover:bg-blue-900/20',
-                    'min-h-[44px]',
-                    'text-blue-600 border border-blue-200 dark:text-blue-400 dark:border-blue-700',
-                    'hover:border-blue-300 hover:bg-blue-50 dark:hover:border-blue-600',
-                    'sm:px-4'
+                    "min-h-[44px] rounded-lg border px-3 py-2 text-sm font-medium transition-colors sm:px-4",
+                    highlighted
+                      ? "border-spk-navy/30 bg-white/70 spk-text-on-light hover:bg-white hover:border-spk-navy/50"
+                      : "border-spk-navy/20 text-spk-navy hover:border-spk-gold hover:bg-spk-gold/10",
                   )}
                   aria-label="Gi tilbakemelding"
                 >
                   <span className="flex items-center gap-1.5">
-                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg
+                      className="h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -146,6 +238,5 @@ export function SessionCard({
         </div>
       </div>
     </div>
-  )
+  );
 }
-

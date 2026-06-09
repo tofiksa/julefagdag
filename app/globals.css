@@ -1,26 +1,153 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --spk-navy: #001b3d;
+  --spk-navy-deep: #051635;
+  --spk-cream: #fff5e1;
+  --spk-gold: #ffc107;
+  --spk-gold-bright: #ffd700;
+  --spk-coral: #f87171;
+  --spk-red: #d32f2f;
+  --spk-text-on-light: #001b3d;
+  --spk-text-on-light-muted: #002952;
+  --spk-star-empty: #4a6278;
+  --spk-error-bg: #fce8e8;
+  --background: var(--spk-navy);
+  --foreground: #ffffff;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-spk-navy: #001b3d;
+  --color-spk-navy-deep: #051635;
+  --color-spk-cream: #fff5e1;
+  --color-spk-gold: #ffc107;
+  --color-spk-gold-bright: #ffd700;
+  --color-spk-coral: #f87171;
+  --color-spk-red: #d32f2f;
+  --color-spk-text-on-light: #001b3d;
+  --color-spk-text-on-light-muted: #002952;
+  --color-spk-star-empty: #4a6278;
+  --color-spk-error-bg: #fce8e8;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+@layer components {
+  .spk-page {
+    @apply min-h-screen bg-spk-navy text-white;
+  }
+
+  .spk-header {
+    @apply sticky top-0 z-40 border-b border-white/10 bg-spk-navy-deep/95 backdrop-blur-sm;
+  }
+
+  .spk-header-inner {
+    @apply mx-auto flex max-w-4xl items-center justify-between gap-2 px-3 py-3 sm:px-4 sm:py-4;
+  }
+
+  .spk-nav-link {
+    @apply flex min-h-[44px] min-w-[44px] items-center gap-1.5 rounded-full px-2 py-2 text-xs font-medium text-white/90 transition-colors hover:bg-white/10 sm:gap-2 sm:px-4 sm:text-sm sm:min-w-auto;
+  }
+
+  .spk-main {
+    @apply mx-auto max-w-4xl px-3 py-6 sm:px-4 sm:py-8;
+  }
+
+  .spk-section-bar {
+    @apply mb-3 rounded-xl bg-spk-navy-deep px-4 py-2.5 text-center text-lg font-bold text-white sm:mb-4 sm:text-xl;
+  }
+
+  .spk-btn-primary {
+    @apply rounded-lg bg-spk-gold px-4 py-3 font-semibold text-spk-navy transition-colors hover:bg-spk-gold-bright disabled:cursor-not-allowed disabled:bg-spk-cream disabled:text-spk-star-empty;
+  }
+
+  .spk-btn-secondary {
+    @apply rounded-lg border border-white/30 bg-transparent px-4 py-3 font-medium text-white transition-colors hover:bg-white/10;
+  }
+
+  .spk-card {
+    @apply rounded-xl border border-spk-navy/10 bg-white p-3 shadow-sm transition-all sm:p-4;
+  }
+
+  .spk-footer {
+    @apply mx-auto max-w-4xl px-3 py-8 text-center sm:px-4;
+  }
+
+  .spk-footer-logo {
+    @apply inline-flex items-center gap-3 text-white;
+  }
+
+  /* Solid highlight surfaces — matches program poster rows, WCAG AA with navy text */
+  .spk-card-highlight-gold {
+    @apply rounded-xl border-2 border-spk-navy/20 bg-spk-gold;
+  }
+
+  .spk-card-highlight-coral {
+    @apply rounded-xl border-2 border-spk-navy/20 bg-spk-coral;
+  }
+
+  .spk-text-on-light {
+    @apply text-spk-text-on-light;
+  }
+
+  .spk-text-on-light-muted {
+    @apply text-spk-text-on-light-muted;
+  }
+
+  /* Forms — all surfaces opaque on white/cream for WCAG AA */
+  .spk-form-surface {
+    @apply rounded-xl border border-spk-navy/15 bg-white p-4 shadow-sm sm:p-6;
+  }
+
+  .spk-form-label {
+    @apply block text-sm font-semibold text-spk-text-on-light;
+  }
+
+  .spk-form-hint {
+    @apply text-sm text-spk-text-on-light-muted;
+  }
+
+  .spk-form-input {
+    @apply mt-1 block w-full rounded-lg border border-spk-navy/25 bg-white px-3 py-2 text-spk-text-on-light shadow-sm placeholder:text-spk-star-empty focus:border-spk-gold focus:outline-none focus:ring-2 focus:ring-spk-gold/40;
+  }
+
+  .spk-form-meta {
+    @apply text-xs text-spk-text-on-light-muted;
+  }
+
+  .spk-form-error {
+    @apply rounded-lg bg-spk-error-bg p-3 text-sm font-medium text-spk-red;
+  }
+
+  .spk-form-success {
+    @apply rounded-xl border border-spk-navy/15 bg-spk-gold p-4 text-center;
+  }
+
+  .spk-form-choice {
+    @apply flex min-h-[80px] min-w-[90px] flex-1 flex-col items-center gap-1.5 rounded-xl border-2 border-spk-navy/25 bg-white p-3 transition-all hover:bg-spk-cream sm:min-w-[100px] sm:flex-none sm:gap-2 sm:p-4;
+  }
+
+  .spk-form-choice-selected {
+    @apply border-spk-navy bg-spk-gold ring-2 ring-spk-navy/20;
+  }
+
+  .spk-admin-panel {
+    @apply rounded-xl border border-spk-navy/10 bg-white p-4 shadow-sm sm:p-6;
+  }
+
+  .spk-admin-stat {
+    @apply rounded-xl border border-spk-navy/10 bg-spk-cream p-4;
+  }
+
+  .spk-alert-error {
+    @apply rounded-xl border border-spk-red/30 bg-spk-error-bg p-4 text-sm font-medium text-spk-red;
+  }
 }

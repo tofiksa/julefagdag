@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { Session } from "@prisma/client";
 import { AgendaList } from "@/components/AgendaList";
+import { AppHeader, EventTitle, SpkFooter } from "@/components/AppHeader";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import { EventFeedbackForm } from "@/components/EventFeedbackForm";
 import { NotificationBanner } from "@/components/NotificationBanner";
@@ -26,26 +27,22 @@ export default function Home() {
     markAsSubmitted: markEventFeedbackAsSubmitted,
   } = useEventFeedback();
 
-  // Check event feedback status after mount to avoid hydration mismatch
   useEffect(() => {
     if (typeof window !== "undefined") {
       setShowEventFeedback(!hasSubmittedEventFeedback);
     }
   }, [hasSubmittedEventFeedback]);
 
-  // Initialize and update current time every minute
   useEffect(() => {
-    // Set initial time on client side only
     setCurrentTime(new Date());
 
     const interval = setInterval(() => {
       setCurrentTime(new Date());
-    }, 60000); // Update every minute
+    }, 60000);
 
     return () => clearInterval(interval);
   }, []);
 
-  // Set up notifications
   useNotifications(sessions, currentTime ?? new Date());
 
   useEffect(() => {
@@ -72,7 +69,6 @@ export default function Home() {
 
     fetchSessions();
 
-    // Refresh sessions every 30 seconds
     const refreshInterval = setInterval(() => {
       fetchSessions();
     }, 30000);
@@ -98,82 +94,71 @@ export default function Home() {
       throw new Error("Kunne ikke sende tilbakemelding");
     }
 
-    // Mark as submitted after successful submission
     markAsSubmitted(feedback.sessionId);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/80 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-800/80">
-        <div className="mx-auto max-w-4xl px-3 py-3 sm:px-4 sm:py-4">
-          <div className="flex items-center justify-between gap-2">
-            <h1 className="text-lg font-bold text-gray-900 dark:text-gray-100 sm:text-xl md:text-2xl truncate">
-              🌲 SPK Jule-Fagdag 2025
-            </h1>
-            <div className="flex items-center gap-2">
-              <Link
-                href="/qr"
-                className="flex items-center gap-1.5 rounded-lg px-2 py-2 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 sm:gap-2 sm:px-4 sm:text-sm min-h-[44px] min-w-[44px] sm:min-w-auto"
-                aria-label="QR-kode"
+    <div className="spk-page">
+      <AppHeader
+        title={<EventTitle />}
+        actions={
+          <>
+            <Link href="/qr" className="spk-nav-link" aria-label="QR-kode">
+              <svg
+                className="h-5 w-5 shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
               >
-                <svg
-                  className="h-5 w-5 shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
-                  />
-                </svg>
-                <span className="hidden sm:inline">QR-kode</span>
-              </Link>
-              <Link
-                href="/favorites"
-                className="flex items-center gap-1.5 rounded-lg px-2 py-2 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 sm:gap-2 sm:px-4 sm:text-sm min-h-[44px] min-w-[44px] sm:min-w-auto"
-                aria-label={`Favoritter${favorites.length > 0 ? ` (${favorites.length})` : ""}`}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"
+                />
+              </svg>
+              <span className="hidden sm:inline">QR-kode</span>
+            </Link>
+            <Link
+              href="/favorites"
+              className="spk-nav-link"
+              aria-label={`Favoritter${favorites.length > 0 ? ` (${favorites.length})` : ""}`}
+            >
+              <svg
+                className="h-5 w-5 shrink-0"
+                fill={favorites.length > 0 ? "currentColor" : "none"}
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
               >
-                <svg
-                  className="h-5 w-5 shrink-0"
-                  fill={favorites.length > 0 ? "currentColor" : "none"}
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
-                  />
-                </svg>
-                {favorites.length > 0 && (
-                  <span className="rounded-full bg-blue-500 px-1.5 py-0.5 text-xs font-medium text-white sm:px-2">
-                    {favorites.length}
-                  </span>
-                )}
-                <span className="hidden sm:inline">Favoritter</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                />
+              </svg>
+              {favorites.length > 0 && (
+                <span className="rounded-full bg-spk-gold px-1.5 py-0.5 text-xs font-bold text-spk-navy sm:px-2">
+                  {favorites.length}
+                </span>
+              )}
+              <span className="hidden sm:inline">Favoritter</span>
+            </Link>
+          </>
+        }
+      />
 
-      <main className="mx-auto max-w-4xl px-3 py-6 sm:px-4 sm:py-8">
+      <main className="spk-main">
         {loading && (
           <div className="flex items-center justify-center py-12">
-            <div className="text-gray-600 dark:text-gray-400">
-              Laster agenda...
-            </div>
+            <div className="text-white/70">Laster agenda...</div>
           </div>
         )}
 
         {error && (
-          <div className="rounded-lg bg-red-50 p-4 text-red-600 dark:bg-red-900/20 dark:text-red-400">
+          <div className="rounded-xl bg-spk-red/20 p-4 text-spk-coral">
             {error}
           </div>
         )}
@@ -182,7 +167,6 @@ export default function Home() {
           <>
             <NotificationBanner sessions={sessions} currentTime={currentTime} />
 
-            {/* Event Feedback Banner - Always visible if not submitted */}
             {showEventFeedback && (
               <div className="mb-6">
                 <EventFeedbackForm
@@ -210,6 +194,8 @@ export default function Home() {
           </>
         )}
       </main>
+
+      <SpkFooter />
 
       {feedbackSession && (
         <FeedbackForm

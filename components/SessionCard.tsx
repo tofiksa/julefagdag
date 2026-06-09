@@ -35,9 +35,7 @@ function RoomBadge({
     <span
       className={cn(
         "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold",
-        onHighlight
-          ? "bg-spk-navy text-white"
-          : "text-white",
+        onHighlight ? "bg-spk-navy text-white" : "text-white",
         !onHighlight && variant === "pokalen" && "bg-spk-coral",
         !onHighlight && variant === "scenen" && "bg-spk-navy",
         !onHighlight && variant === "other" && "bg-spk-navy-deep",
@@ -152,12 +150,11 @@ export function SessionCard({
         <div className="flex flex-row gap-2 sm:flex-col sm:shrink-0">
           {onFavoriteToggle && (
             <button
+              type="button"
               onClick={() => onFavoriteToggle(session.id)}
               className={cn(
                 "min-h-[44px] min-w-[44px] rounded-full p-2 transition-colors",
-                highlighted
-                  ? "hover:bg-spk-navy/10"
-                  : "hover:bg-spk-navy/5",
+                highlighted ? "hover:bg-spk-navy/10" : "hover:bg-spk-navy/5",
                 isFavorite
                   ? "text-spk-navy"
                   : highlighted
@@ -173,6 +170,7 @@ export function SessionCard({
                 fill={isFavorite ? "currentColor" : "none"}
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -184,57 +182,55 @@ export function SessionCard({
             </button>
           )}
 
-          {onFeedbackClick && status !== "upcoming" && (
-            <>
-              {hasSubmittedFeedback ? (
-                <div
-                  className={cn(
-                    "flex min-h-[44px] items-center justify-center rounded-lg border px-3 py-2 text-sm font-medium sm:px-4",
-                    highlighted
-                      ? "border-spk-navy/25 bg-white/60 spk-text-on-light"
-                      : "border-spk-gold/40 bg-spk-gold/10 text-spk-navy",
-                  )}
-                >
-                  <span className="flex items-center gap-1.5">
-                    <span className="text-base">😊</span>
-                    <span className="hidden sm:inline">
-                      Tilbakemelding sendt
-                    </span>
-                    <span className="sm:hidden">Sendt</span>
-                  </span>
-                </div>
-              ) : (
-                <button
-                  onClick={() => onFeedbackClick(session.id)}
-                  className={cn(
-                    "min-h-[44px] rounded-lg border px-3 py-2 text-sm font-medium transition-colors sm:px-4",
-                    highlighted
-                      ? "border-spk-navy/30 bg-white/70 spk-text-on-light hover:bg-white hover:border-spk-navy/50"
-                      : "border-spk-navy/20 text-spk-navy hover:border-spk-gold hover:bg-spk-gold/10",
-                  )}
-                  aria-label="Gi tilbakemelding"
-                >
-                  <span className="flex items-center gap-1.5">
-                    <svg
-                      className="h-4 w-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
-                      />
-                    </svg>
-                    <span className="hidden sm:inline">Gi tilbakemelding</span>
-                    <span className="sm:hidden">Tilbakemelding</span>
-                  </span>
-                </button>
-              )}
-            </>
-          )}
+          {onFeedbackClick &&
+            status !== "upcoming" &&
+            (hasSubmittedFeedback ? (
+              <div
+                className={cn(
+                  "flex min-h-[44px] items-center justify-center rounded-lg border px-3 py-2 text-sm font-medium sm:px-4",
+                  highlighted
+                    ? "border-spk-navy/25 bg-white/60 spk-text-on-light"
+                    : "border-spk-gold/40 bg-spk-gold/10 text-spk-navy",
+                )}
+              >
+                <span className="flex items-center gap-1.5">
+                  <span className="text-base">😊</span>
+                  <span className="hidden sm:inline">Tilbakemelding sendt</span>
+                  <span className="sm:hidden">Sendt</span>
+                </span>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => onFeedbackClick(session.id)}
+                className={cn(
+                  "min-h-[44px] rounded-lg border px-3 py-2 text-sm font-medium transition-colors sm:px-4",
+                  highlighted
+                    ? "border-spk-navy/30 bg-white/70 spk-text-on-light hover:bg-white hover:border-spk-navy/50"
+                    : "border-spk-navy/20 text-spk-navy hover:border-spk-gold hover:bg-spk-gold/10",
+                )}
+                aria-label="Gi tilbakemelding"
+              >
+                <span className="flex items-center gap-1.5">
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
+                    />
+                  </svg>
+                  <span className="hidden sm:inline">Gi tilbakemelding</span>
+                  <span className="sm:hidden">Tilbakemelding</span>
+                </span>
+              </button>
+            ))}
         </div>
       </div>
     </div>

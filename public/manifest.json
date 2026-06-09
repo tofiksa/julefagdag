@@ -1,7 +1,7 @@
 {
-  "name": "SPK Julefagdag 2025 - Agenda",
-  "short_name": "Julefagdag",
-  "description": "Agenda for Statens Pensjonskasse Julefagdag 2025",
+  "name": "SPK Inspirasjonsdag 2026 - Agenda",
+  "short_name": "Inspirasjonsdag",
+  "description": "Agenda for Statens Pensjonskasse Inspirasjonsdag 2026",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#001B3D",
@@ -30,4 +30,3 @@
   "categories": ["productivity", "education"],
   "screenshots": []
 }
-

@@ -1,53 +1,52 @@
-'use client'
+"use client";
 
-import { useState, useEffect, useCallback } from 'react'
+import { useCallback, useEffect, useState } from "react";
 
-const FEEDBACK_KEY = 'julefagdag-feedback'
+const FEEDBACK_KEY = "julefagdag-feedback";
 
 function getFeedbackFromStorage(): string[] {
-  if (typeof window === 'undefined') return []
+  if (typeof window === "undefined") return [];
   try {
-    const stored = localStorage.getItem(FEEDBACK_KEY)
-    return stored ? JSON.parse(stored) : []
+    const stored = localStorage.getItem(FEEDBACK_KEY);
+    return stored ? JSON.parse(stored) : [];
   } catch (error) {
-    console.error('Error loading feedback:', error)
-    return []
+    console.error("Error loading feedback:", error);
+    return [];
   }
 }
 
 export function useFeedback() {
   const [submittedSessions, setSubmittedSessions] = useState<string[]>(() =>
-    getFeedbackFromStorage()
-  )
+    getFeedbackFromStorage(),
+  );
 
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === "undefined") return;
 
-    const stored = getFeedbackFromStorage()
-    setSubmittedSessions(stored)
-  }, [])
+    const stored = getFeedbackFromStorage();
+    setSubmittedSessions(stored);
+  }, []);
 
   const hasSubmittedFeedback = useCallback(
     (sessionId: string) => {
-      return submittedSessions.includes(sessionId)
+      return submittedSessions.includes(sessionId);
     },
-    [submittedSessions]
-  )
+    [submittedSessions],
+  );
 
   const markAsSubmitted = useCallback((sessionId: string) => {
-    if (typeof window === 'undefined') return
+    if (typeof window === "undefined") return;
 
-    const current = getFeedbackFromStorage()
+    const current = getFeedbackFromStorage();
     if (!current.includes(sessionId)) {
-      const updated = [...current, sessionId]
-      localStorage.setItem(FEEDBACK_KEY, JSON.stringify(updated))
-      setSubmittedSessions(updated)
+      const updated = [...current, sessionId];
+      localStorage.setItem(FEEDBACK_KEY, JSON.stringify(updated));
+      setSubmittedSessions(updated);
     }
-  }, [])
+  }, []);
 
   return {
     hasSubmittedFeedback,
     markAsSubmitted,
-  }
+  };
 }
-

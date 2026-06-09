@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AdminLoginForm } from "@/components/AdminLoginForm";
 import { FeedbackResults } from "@/components/FeedbackResults";
 import {
@@ -67,21 +67,7 @@ export default function AdminFeedbackPage() {
     }
   }, []);
 
-  useEffect(() => {
-    // Fetch feedback results when authenticated
-    if (authenticated) {
-      fetchResults();
-      fetchEventFeedbacks();
-      // Refresh every 30 seconds
-      const interval = setInterval(() => {
-        fetchResults();
-        fetchEventFeedbacks();
-      }, 30000);
-      return () => clearInterval(interval);
-    }
-  }, [authenticated]);
-
-  const fetchResults = async () => {
+  const fetchResults = useCallback(async () => {
     try {
       const response = await fetch("/api/feedback/results", {
         cache: "no-store",
@@ -109,9 +95,9 @@ export default function AdminFeedbackPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "En feil oppstod");
     }
-  };
+  }, []);
 
-  const fetchEventFeedbacks = async () => {
+  const fetchEventFeedbacks = useCallback(async () => {
     try {
       const response = await fetch("/api/event-feedback", {
         cache: "no-store",
@@ -143,7 +129,21 @@ export default function AdminFeedbackPage() {
       console.error("Error fetching event feedbacks:", err);
       setError(errorMessage);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    // Fetch feedback results when authenticated
+    if (authenticated) {
+      fetchResults();
+      fetchEventFeedbacks();
+      // Refresh every 30 seconds
+      const interval = setInterval(() => {
+        fetchResults();
+        fetchEventFeedbacks();
+      }, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [authenticated, fetchResults, fetchEventFeedbacks]);
 
   const handleLoginSuccess = () => {
     setAuthenticated(true);
@@ -191,7 +191,7 @@ export default function AdminFeedbackPage() {
           <h1 className="text-lg font-black text-white sm:text-xl md:text-2xl">
             📊 Tilbakemeldinger
           </h1>
-          <button onClick={handleLogout} className="spk-nav-link">
+          <button type="button" onClick={handleLogout} className="spk-nav-link">
             Logg ut
           </button>
         </div>
@@ -221,8 +221,8 @@ export default function AdminFeedbackPage() {
                 </div>
                 {(() => {
                   const ratings = eventFeedbacks
-                    .filter((f) => f.rating !== null)
-                    .map((f) => f.rating!);
+                    .map((f) => f.rating)
+                    .filter((rating): rating is number => rating !== null);
                   const avgRating =
                     ratings.length > 0
                       ? (
@@ -329,13 +329,14 @@ export default function AdminFeedbackPage() {
                         {feedback.comment}
                       </p>
                     )}
-                    {feedback.rating && (
+                    {feedback.rating !== null && (
                       <div className="mt-2 flex items-center gap-1">
                         {[1, 2, 3, 4, 5].map((star) => (
                           <svg
                             key={star}
                             className={`h-5 w-5 ${
-                              star <= feedback.rating!
+                              feedback.rating !== null &&
+                              star <= feedback.rating
                                 ? "fill-spk-gold-bright text-spk-gold-bright"
                                 : "fill-spk-star-empty text-spk-star-empty"
                             }`}

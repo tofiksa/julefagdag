@@ -78,6 +78,7 @@ export function FeedbackResults({ results }: FeedbackResultsProps) {
     return (
       <div className="space-y-6">
         <button
+          type="button"
           onClick={() => setSelectedSessionId(null)}
           className="flex items-center gap-2 font-medium text-spk-gold-bright hover:text-white"
         >
@@ -208,6 +209,7 @@ export function FeedbackResults({ results }: FeedbackResultsProps) {
         <div className="space-y-3">
           {results.map((result) => (
             <button
+              type="button"
               key={result.session.id}
               onClick={() => setSelectedSessionId(result.session.id)}
               className="spk-admin-panel w-full text-left transition-colors hover:bg-spk-cream"

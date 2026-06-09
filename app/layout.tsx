@@ -14,13 +14,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SPK Julefagdag 2025 - Agenda",
-  description: "Agenda for Statens Pensjonskasse Julefagdag 2025",
+  title: "SPK Inspirasjonsdag 2026 - Agenda",
+  description: "Agenda for Statens Pensjonskasse Inspirasjonsdag 2026",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Julefagdag",
+    title: "Inspirasjonsdag",
   },
   icons: {
     icon: "/icon-192.svg",

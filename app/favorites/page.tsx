@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
 import type { Session } from "@prisma/client";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { AppHeader, SpkFooter } from "@/components/AppHeader";
-import { SessionCard } from "@/components/SessionCard";
 import { FeedbackForm } from "@/components/FeedbackForm";
+import { SessionCard } from "@/components/SessionCard";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useFeedback } from "@/hooks/useFeedback";
-import { sortSessionsByTime, groupSessionsByStatus } from "@/lib/utils";
+import { groupSessionsByStatus, sortSessionsByTime } from "@/lib/utils";
 
 export default function FavoritesPage() {
   const [sessions, setSessions] = useState<Session[]>([]);
@@ -137,51 +137,48 @@ export default function FavoritesPage() {
           </div>
         )}
 
-        {!loading && !error && currentTime && (
-          <>
-            {favoriteSessions.length === 0 ? (
-              <div className="rounded-xl border border-white/10 bg-white/5 p-12 text-center">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-spk-gold/20">
-                  <svg
-                    className="h-8 w-8 text-spk-gold-bright"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
-                    />
-                  </svg>
-                </div>
-                <h2 className="mb-2 text-xl font-bold text-white">
-                  Ingen favoritter ennå
-                </h2>
-                <p className="mb-6 text-white/70">
-                  Merk foredrag som favoritter for å se dem her
-                </p>
-                <Link
-                  href="/"
-                  className="spk-btn-primary inline-block px-6 py-3"
+        {!loading &&
+          !error &&
+          currentTime &&
+          (favoriteSessions.length === 0 ? (
+            <div className="rounded-xl border border-white/10 bg-white/5 p-12 text-center">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-spk-gold/20">
+                <svg
+                  className="h-8 w-8 text-spk-gold-bright"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
-                  Se agenda
-                </Link>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                  />
+                </svg>
               </div>
-            ) : (
-              <div className="space-y-6 sm:space-y-8">
-                {renderGroup("Nå pågår", current, 0)}
-                {renderGroup("Kommende", upcoming, current.length)}
-                {renderGroup(
-                  "Ferdig",
-                  completed,
-                  current.length + upcoming.length,
-                )}
-              </div>
-            )}
-          </>
-        )}
+              <h2 className="mb-2 text-xl font-bold text-white">
+                Ingen favoritter ennå
+              </h2>
+              <p className="mb-6 text-white/70">
+                Merk foredrag som favoritter for å se dem her
+              </p>
+              <Link href="/" className="spk-btn-primary inline-block px-6 py-3">
+                Se agenda
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-6 sm:space-y-8">
+              {renderGroup("Nå pågår", current, 0)}
+              {renderGroup("Kommende", upcoming, current.length)}
+              {renderGroup(
+                "Ferdig",
+                completed,
+                current.length + upcoming.length,
+              )}
+            </div>
+          ))}
       </main>
 
       <SpkFooter />

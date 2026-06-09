@@ -1,8 +1,8 @@
 "use client";
 
+import type { Session } from "@prisma/client";
 import { useEffect, useState } from "react";
 import { useFavorites } from "@/hooks/useFavorites";
-import type { Session } from "@prisma/client";
 
 interface NotificationBannerProps {
   sessions: Session[];

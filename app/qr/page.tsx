@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { AppHeader, SpkFooter } from "@/components/AppHeader";
 
 export default function QRCodePage() {
-  const url = "https://julefagdag.vercel.app/";
+  const url = "https://agendaen.vercel.app/";
 
   return (
     <div className="spk-page">
@@ -37,7 +37,7 @@ export default function QRCodePage() {
           <div className="relative flex items-center justify-center rounded-xl bg-spk-cream p-4">
             <Image
               src="/qr-code.png"
-              alt="QR-kode for Julefagdag 2025"
+              alt="QR-kode for Inspirasjonsdag 2026"
               width={400}
               height={400}
               className="rounded-lg"
@@ -53,6 +53,7 @@ export default function QRCodePage() {
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"

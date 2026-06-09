@@ -64,7 +64,6 @@ export function AdminLoginForm({ onSuccess }: AdminLoginFormProps) {
               placeholder="Skriv inn passord"
               required
               disabled={isSubmitting}
-              autoFocus
             />
           </div>
 

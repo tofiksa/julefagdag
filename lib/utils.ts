@@ -1,6 +1,6 @@
+import type { Session } from "@prisma/client";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { Session } from "@prisma/client";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -106,9 +106,7 @@ export function getRoomBadgeVariant(room: string): RoomBadgeVariant {
 }
 
 /** When event-wide feedback becomes available (after «Avslutning»). */
-export function getEventFeedbackStartTime(
-  sessions: Session[],
-): Date | null {
+export function getEventFeedbackStartTime(sessions: Session[]): Date | null {
   const override = process.env.NEXT_PUBLIC_EVENT_FEEDBACK_START;
   if (override) {
     return new Date(override);

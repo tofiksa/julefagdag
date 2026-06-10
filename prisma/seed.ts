@@ -67,10 +67,7 @@ async function main() {
       startTime: new Date("2026-06-11T10:45:00"),
       endTime: new Date("2026-06-11T11:15:00"),
       description:
-        "AI revolusjonerer måten vi skriver kode og bygger løsninger på!",
-      longDescription:
-        "AI revolusjonerer måten vi skriver kode og bygger løsninger på – vi får mer gjort, raskere enn noen gang. Men AI er i bunn og grunn en avansert auto-complete som gjetter seg til neste ord; den bruker ikke applikasjonen din som et menneske. Den kjenner ikke hvordan det føles å klikke seg gjennom et skjema, navigere en meny eller tolke en fargepalett. Noen hevder frontend er det første AI kan erstatte, men jeg mener det motsatte: nettopp fordi brukeropplevelse handler om menneskelig opplevelse, er det noe av det siste vi bør overlate helt til maskiner. Alt som er relatert til mennesker bør involvere mennesker.<br><br>I dette innlegget deler jeg erfaringer fra egen hverdag der mesteparten av koden nå genereres av AI, og diskuterer balansen mellom produktivitet og kvalitet. «With great power comes great responsibility» – vi står fortsatt ansvarlige for det vi lager, enten koden er håndskrevet eller generert. Jeg ser på hva AI er fantastisk til (idémyldring, kodegenerering, sparring), og hvor mennesket fortsatt er uunnværlig: å sikre at løsningene er behagelige, tilgjengelige og fungerer for ekte brukere med ulik bakgrunn, kontekst og behov. Bruk AI for alt det er verdt, men ikke glem å faktisk teste hvordan løsningen oppleves – de grunnleggende prinsippene for god brukeropplevelse gjelder fortsatt.",
-      images: ["/sessions/koding-og-brukeropplevelse-i-ai-eraen.jpg"],
+        "AI revolusjonerer måten vi skriver kode og bygger løsninger på!"      
     },
     {
       title: "Når team tar ansvar for verdi - ikke bare leveranser",

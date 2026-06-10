@@ -17,6 +17,8 @@ const SPEAKER_IMAGE_MAP: Record<string, string> = {
   "kjetil hårtveit": "/speakers/kjetil.jpeg",
   therese: "/speakers/therese.png",
   janne: "/speakers/janne.png",
+  knut: "/speakers/knut.jpg",
+  solveig: "/speakers/solveig.jpg",
   "jawad saleemi": "/speakers/jawad.jpeg",
   "triera gashi": "/speakers/triera.png",
   "ingrid fosså": "/speakers/ingrid.jpeg",

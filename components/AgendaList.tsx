@@ -13,6 +13,7 @@ interface AgendaListProps {
   favorites?: string[];
   onFavoriteToggle?: (sessionId: string) => void;
   onFeedbackClick?: (sessionId: string) => void;
+  onOpenDetail?: (sessionId: string) => void;
   currentTime?: Date;
   hasSubmittedFeedback?: (sessionId: string) => boolean;
 }
@@ -25,6 +26,7 @@ function SessionGroup({
   hasSubmittedFeedback,
   onFavoriteToggle,
   onFeedbackClick,
+  onOpenDetail,
   startIndex,
 }: {
   title: string;
@@ -34,6 +36,7 @@ function SessionGroup({
   hasSubmittedFeedback?: (sessionId: string) => boolean;
   onFavoriteToggle?: (sessionId: string) => void;
   onFeedbackClick?: (sessionId: string) => void;
+  onOpenDetail?: (sessionId: string) => void;
   startIndex: number;
 }) {
   if (sessions.length === 0) return null;
@@ -55,6 +58,7 @@ function SessionGroup({
               hasSubmittedFeedback={hasSubmittedFeedback?.(session.id) ?? false}
               onFavoriteToggle={interactive ? onFavoriteToggle : undefined}
               onFeedbackClick={interactive ? onFeedbackClick : undefined}
+              onOpenDetail={interactive ? onOpenDetail : undefined}
             />
           );
         })}
@@ -68,6 +72,7 @@ export function AgendaList({
   favorites = [],
   onFavoriteToggle,
   onFeedbackClick,
+  onOpenDetail,
   currentTime = new Date(),
   hasSubmittedFeedback,
 }: AgendaListProps) {
@@ -87,6 +92,7 @@ export function AgendaList({
         hasSubmittedFeedback={hasSubmittedFeedback}
         onFavoriteToggle={onFavoriteToggle}
         onFeedbackClick={onFeedbackClick}
+        onOpenDetail={onOpenDetail}
         startIndex={0}
       />
 
@@ -98,6 +104,7 @@ export function AgendaList({
         hasSubmittedFeedback={hasSubmittedFeedback}
         onFavoriteToggle={onFavoriteToggle}
         onFeedbackClick={onFeedbackClick}
+        onOpenDetail={onOpenDetail}
         startIndex={current.length}
       />
 
@@ -109,6 +116,7 @@ export function AgendaList({
         hasSubmittedFeedback={hasSubmittedFeedback}
         onFavoriteToggle={onFavoriteToggle}
         onFeedbackClick={onFeedbackClick}
+        onOpenDetail={onOpenDetail}
         startIndex={current.length + upcoming.length}
       />
 

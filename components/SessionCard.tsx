@@ -1,4 +1,7 @@
+"use client";
+
 import type { Session } from "@prisma/client";
+import { useSwipeGesture } from "@/hooks/useSwipeGesture";
 import { getSessionMap } from "@/lib/session-maps";
 import {
   cn,
@@ -25,13 +28,14 @@ interface SessionCardProps {
   index?: number;
   onFavoriteToggle?: (sessionId: string) => void;
   onFeedbackClick?: (sessionId: string) => void;
+  onOpenDetail?: (sessionId: string) => void;
 }
 
 function isHighlightedVariant(variant: SessionVariant): boolean {
   return variant === "highlight-gold" || variant === "highlight-coral";
 }
 
-function RoomBadge({
+export function RoomBadge({
   room,
   onHighlight,
 }: {
@@ -63,6 +67,7 @@ export function SessionCard({
   index = 0,
   onFavoriteToggle,
   onFeedbackClick,
+  onOpenDetail,
 }: SessionCardProps) {
   const status = getSessionStatus(session, currentTime);
   const variant = getSessionVariant(session);
@@ -70,6 +75,14 @@ export function SessionCard({
   const startTime = new Date(session.startTime);
   const endTime = new Date(session.endTime);
   const sessionMap = getSessionMap(session.title);
+
+  const openDetail = onOpenDetail ? () => onOpenDetail(session.id) : undefined;
+
+  const { handlers: swipeHandlers } = useSwipeGesture({
+    onSwipeLeft: openDetail,
+    onSwipeRight: openDetail,
+    enabled: Boolean(openDetail),
+  });
 
   if (variant === "break") {
     return (
@@ -89,6 +102,8 @@ export function SessionCard({
   const isEven = index % 2 === 0;
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: card acts as a button via role/tabIndex when openable
+    // biome-ignore lint/a11y/useAriaPropsSupportedByRole: role="button" is set whenever aria-label is set (both depend on openDetail)
     <div
       className={cn(
         "rounded-xl border p-3 transition-all sm:p-4",
@@ -101,7 +116,27 @@ export function SessionCard({
           "border-spk-gold ring-2 ring-spk-gold/50",
         status === "completed" && variant === "default" && "opacity-70",
         "hover:shadow-md",
+        openDetail &&
+          "cursor-pointer touch-pan-y focus-visible:outline-2 focus-visible:outline-spk-gold",
       )}
+      role={openDetail ? "button" : undefined}
+      tabIndex={openDetail ? 0 : undefined}
+      aria-label={openDetail ? `Vis detaljer for ${session.title}` : undefined}
+      onClick={openDetail}
+      onKeyDown={
+        openDetail
+          ? (e) => {
+              if (
+                (e.key === "Enter" || e.key === " ") &&
+                e.target === e.currentTarget
+              ) {
+                e.preventDefault();
+                openDetail();
+              }
+            }
+          : undefined
+      }
+      {...(openDetail ? swipeHandlers : {})}
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex min-w-0 flex-1 gap-3 sm:gap-4">
@@ -166,7 +201,12 @@ export function SessionCard({
             )}
 
             {sessionMap && (
-              <div className="mt-3 overflow-hidden rounded-lg border border-spk-navy/10">
+              // biome-ignore lint/a11y/noStaticElementInteractions: only stops card-open propagation around the map
+              // biome-ignore lint/a11y/useKeyWithClickEvents: only stops card-open propagation around the map
+              <div
+                className="mt-3 overflow-hidden rounded-lg border border-spk-navy/10"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <iframe
                   src={sessionMap.embedUrl}
                   title={`Kart til ${sessionMap.label}`}
@@ -195,7 +235,10 @@ export function SessionCard({
           {onFavoriteToggle && (
             <button
               type="button"
-              onClick={() => onFavoriteToggle(session.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onFavoriteToggle(session.id);
+              }}
               className={cn(
                 "min-h-[44px] min-w-[44px] rounded-full p-2 transition-colors",
                 highlighted ? "hover:bg-spk-navy/10" : "hover:bg-spk-navy/5",
@@ -246,7 +289,10 @@ export function SessionCard({
             ) : (
               <button
                 type="button"
-                onClick={() => onFeedbackClick(session.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onFeedbackClick(session.id);
+                }}
                 className={cn(
                   "min-h-[44px] rounded-lg border px-3 py-2 text-sm font-medium transition-colors sm:px-4",
                   highlighted

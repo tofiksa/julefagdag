@@ -2,20 +2,22 @@
 
 import type { Session } from "@prisma/client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { AgendaList } from "@/components/AgendaList";
 import { AppHeader, EventTitle, SpkFooter } from "@/components/AppHeader";
 import { EventFeedbackForm } from "@/components/EventFeedbackForm";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { NotificationBanner } from "@/components/NotificationBanner";
+import { SessionDetail } from "@/components/SessionDetail";
 import { useEventFeedback } from "@/hooks/useEventFeedback";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useFeedback } from "@/hooks/useFeedback";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useSessionDetailParam } from "@/hooks/useSessionDetailParam";
 import { isEventFeedbackAvailable, isLogisticsSession } from "@/lib/utils";
 
-export default function Home() {
+function HomeContent() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -28,6 +30,18 @@ export default function Home() {
     hasSubmittedEventFeedback,
     markAsSubmitted: markEventFeedbackAsSubmitted,
   } = useEventFeedback();
+  const {
+    sessionId: detailSessionId,
+    openedViaUi,
+    open: openDetail,
+    close: closeDetail,
+  } = useSessionDetailParam();
+
+  const detailSession =
+    sessions.find(
+      (session) =>
+        session.id === detailSessionId && !isLogisticsSession(session),
+    ) ?? null;
 
   useEffect(() => {
     if (
@@ -115,6 +129,17 @@ export default function Home() {
     }
 
     markAsSubmitted(feedback.sessionId);
+  };
+
+  const handleFeedbackClick = (sessionId: string) => {
+    const session = sessions.find((s) => s.id === sessionId);
+    if (
+      session &&
+      !isLogisticsSession(session) &&
+      !hasSubmittedFeedback(sessionId)
+    ) {
+      setFeedbackSession(session);
+    }
   };
 
   return (
@@ -206,22 +231,27 @@ export default function Home() {
               currentTime={currentTime}
               hasSubmittedFeedback={hasSubmittedFeedback}
               onFavoriteToggle={toggleFavorite}
-              onFeedbackClick={(sessionId) => {
-                const session = sessions.find((s) => s.id === sessionId);
-                if (
-                  session &&
-                  !isLogisticsSession(session) &&
-                  !hasSubmittedFeedback(sessionId)
-                ) {
-                  setFeedbackSession(session);
-                }
-              }}
+              onFeedbackClick={handleFeedbackClick}
+              onOpenDetail={openDetail}
             />
           </>
         )}
       </main>
 
       <SpkFooter />
+
+      {detailSession && currentTime && (
+        <SessionDetail
+          session={detailSession}
+          currentTime={currentTime}
+          isFavorite={favorites.includes(detailSession.id)}
+          hasSubmittedFeedback={hasSubmittedFeedback(detailSession.id)}
+          onFavoriteToggle={toggleFavorite}
+          onFeedbackClick={handleFeedbackClick}
+          animateIn={openedViaUi}
+          onClose={closeDetail}
+        />
+      )}
 
       {feedbackSession && (
         <FeedbackForm
@@ -232,5 +262,13 @@ export default function Home() {
         />
       )}
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense>
+      <HomeContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 {
-  "name": "julefagdag",
-  "version": "0.1.0",
+  "name": "inspirasjonsdag",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,6 +9,8 @@
     "lint": "biome check",
     "format": "biome format --write",
     "db:seed": "tsx --env-file=.env.local prisma/seed.ts",
+    "db:clear-feedback": "tsx --env-file=.env.local scripts/clear-feedback.ts",
+    "db:update-details": "tsx --env-file=.env.local scripts/update-session-details.ts",
     "postinstall": "prisma generate"
   },
   "prisma": {

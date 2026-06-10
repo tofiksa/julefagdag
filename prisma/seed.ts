@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { SESSION_DETAILS } from "./session-details";
 
 const prisma = new PrismaClient();
 
@@ -180,8 +181,14 @@ async function main() {
   ];
 
   for (const session of sessions) {
+    const details = SESSION_DETAILS[session.title];
+
     await prisma.session.create({
-      data: session,
+      data: {
+        ...session,
+        longDescription: details?.longDescription ?? null,
+        images: details?.images ?? [],
+      },
     });
   }
 

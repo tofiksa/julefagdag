@@ -2,19 +2,21 @@
 
 import type { Session } from "@prisma/client";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { AppHeader, SpkFooter } from "@/components/AppHeader";
 import { FeedbackForm } from "@/components/FeedbackForm";
 import { SessionCard } from "@/components/SessionCard";
+import { SessionDetail } from "@/components/SessionDetail";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useFeedback } from "@/hooks/useFeedback";
+import { useSessionDetailParam } from "@/hooks/useSessionDetailParam";
 import {
   groupSessionsByStatus,
   isLogisticsSession,
   sortSessionsByTime,
 } from "@/lib/utils";
 
-export default function FavoritesPage() {
+function FavoritesContent() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -22,6 +24,12 @@ export default function FavoritesPage() {
   const [feedbackSession, setFeedbackSession] = useState<Session | null>(null);
   const { favorites, toggleFavorite, removeFavorites } = useFavorites();
   const { hasSubmittedFeedback, markAsSubmitted } = useFeedback();
+  const {
+    sessionId: detailSessionId,
+    openedViaUi,
+    open: openDetail,
+    close: closeDetail,
+  } = useSessionDetailParam();
 
   useEffect(() => {
     setCurrentTime(new Date());
@@ -77,6 +85,23 @@ export default function FavoritesPage() {
     (session) => favorites.includes(session.id) && !isLogisticsSession(session),
   );
 
+  const detailSession =
+    sessions.find(
+      (session) =>
+        session.id === detailSessionId && !isLogisticsSession(session),
+    ) ?? null;
+
+  const handleFeedbackClick = (sessionId: string) => {
+    const session = sessions.find((s) => s.id === sessionId);
+    if (
+      session &&
+      !isLogisticsSession(session) &&
+      !hasSubmittedFeedback(sessionId)
+    ) {
+      setFeedbackSession(session);
+    }
+  };
+
   const sortedFavorites = sortSessionsByTime(
     favoriteSessions,
     currentTime ?? undefined,
@@ -111,22 +136,8 @@ export default function FavoritesPage() {
                 isFavorite={true}
                 hasSubmittedFeedback={hasSubmittedFeedback(session.id)}
                 onFavoriteToggle={interactive ? toggleFavorite : undefined}
-                onFeedbackClick={
-                  interactive
-                    ? (sessionId) => {
-                        const session = sessions.find(
-                          (s) => s.id === sessionId,
-                        );
-                        if (
-                          session &&
-                          !isLogisticsSession(session) &&
-                          !hasSubmittedFeedback(sessionId)
-                        ) {
-                          setFeedbackSession(session);
-                        }
-                      }
-                    : undefined
-                }
+                onFeedbackClick={interactive ? handleFeedbackClick : undefined}
+                onOpenDetail={interactive ? openDetail : undefined}
               />
             );
           })}
@@ -210,6 +221,19 @@ export default function FavoritesPage() {
 
       <SpkFooter />
 
+      {detailSession && currentTime && (
+        <SessionDetail
+          session={detailSession}
+          currentTime={currentTime}
+          isFavorite={favorites.includes(detailSession.id)}
+          hasSubmittedFeedback={hasSubmittedFeedback(detailSession.id)}
+          onFavoriteToggle={toggleFavorite}
+          onFeedbackClick={handleFeedbackClick}
+          animateIn={openedViaUi}
+          onClose={closeDetail}
+        />
+      )}
+
       {feedbackSession && (
         <FeedbackForm
           sessionId={feedbackSession.id}
@@ -233,5 +257,13 @@ export default function FavoritesPage() {
         />
       )}
     </div>
+  );
+}
+
+export default function FavoritesPage() {
+  return (
+    <Suspense>
+      <FavoritesContent />
+    </Suspense>
   );
 }

@@ -73,7 +73,7 @@ images          String[] @default([])
 - Låser gesten som horisontal først når |dx| > |dy| og |dx| > ~10px (slop), ellers
   overlates hendelsen til vertikal scrolling.
 - Rapporterer levende offset under draget og om terskelen ble passert ved slipp
-  (distanse eller hastighet).
+  (distanse eller hastighet, se konkrete verdier i seksjon 3).
 
 **`hooks/useSessionDetailParam.ts`** — leser/skriver `?session=<id>`.
 
@@ -89,7 +89,7 @@ images          String[] @default([])
 
 - Ny prop `onOpenDetail?: (sessionId: string) => void`.
 - Hele kortet blir trykkbart og keyboard-tilgjengelig (Enter/Space).
-- Horisontal swipe på kortet (≥ ~60px) åpner også detaljen (via `useSwipeGesture`).
+- Horisontal swipe på kortet (≥ 60px) åpner også detaljen (via `useSwipeGesture`).
 - Favoritt- og tilbakemeldingsknappene stopper propagering så de ikke åpner detaljen.
 - Break-/logistikk-varianter forblir uendret (ingen `onOpenDetail` sendes inn).
 
@@ -105,11 +105,12 @@ images          String[] @default([])
 ## 3. Gestures og animasjon
 
 - **Åpne:** trykk hvor som helst på kortet (unntatt indre knapper), eller horisontal
-  swipe ≥ ~60px. Detaljen glir inn fra høyre med CSS-transition (~250ms ease-out).
+  swipe ≥ 60px. Detaljen glir inn fra høyre med CSS-transition (250ms ease-out).
 - **Lukke:** swipe mot høyre på detaljpanelet. Panelet følger fingeren med direkte
   `transform: translateX()` (uten transition under draget). Ved slipp:
-  - forbi ~35 % av skjermbredden ELLER høy hastighet → animeres ut og lukkes
-  - ellers → fjærer tilbake til utgangsposisjon med transition
+  - forbi 35 % av skjermbredden ELLER slipphastighet > 0,5 px/ms mot høyre
+    → animeres ut og lukkes
+  - ellers → glir tilbake til utgangsposisjon med transition
 - Tilbakeknappen, Escape og nettleserens tilbakeknapp lukker også.
 - `prefers-reduced-motion` respekteres — da hopper visningen inn/ut uten animasjon.
 - Body-scroll låses mens detaljen er åpen.

@@ -1,5 +1,5 @@
 // Service Worker for Julefagdag PWA — generated from sw.template.js; do not edit sw.js directly
-const CACHE_VERSION = "dev";
+const CACHE_VERSION = "__CACHE_VERSION__";
 const CACHE_NAME = `julefagdag-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `julefagdag-runtime-${CACHE_VERSION}`;
 const API_CACHE_MAX_AGE = 30000; // 30 seconds for API responses

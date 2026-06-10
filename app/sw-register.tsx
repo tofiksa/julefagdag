@@ -13,6 +13,7 @@ export function ServiceWorkerRegistration() {
       return;
     }
 
+    let registration: ServiceWorkerRegistration | null = null;
     let updateInterval: NodeJS.Timeout | null = null;
     let refreshing = false;
 
@@ -22,7 +23,12 @@ export function ServiceWorkerRegistration() {
       setUpdateReady(true);
     };
 
-    // When the new SW takes control, reload once to pick up fresh assets
+    const checkForUpdate = () => {
+      registration?.update().catch(() => {
+        // Ignore transient update check failures
+      });
+    };
+
     const onControllerChange = () => {
       if (refreshing) return;
       refreshing = true;
@@ -33,29 +39,34 @@ export function ServiceWorkerRegistration() {
       onControllerChange,
     );
 
-    // The activated SW posts SW_UPDATED — surface the reload prompt
     const onMessage = (event: MessageEvent) => {
       if (event.data && event.data.type === "SW_UPDATED") {
-        // controllerchange will handle the reload; nothing else needed here
+        // controllerchange handles reload after the user accepts an update
       }
     };
     navigator.serviceWorker.addEventListener("message", onMessage);
 
-    // Register service worker in both dev and production
-    // In development, it helps test notifications
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        checkForUpdate();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
     navigator.serviceWorker
       .register("/sw.js")
-      .then((registration) => {
-        console.log("Service Worker registered:", registration.scope);
+      .then((reg) => {
+        registration = reg;
+        console.log("Service Worker registered:", reg.scope);
 
-        // A worker may already be waiting from a previous load
-        if (registration.waiting && navigator.serviceWorker.controller) {
-          promptForWorker(registration.waiting);
+        checkForUpdate();
+
+        if (reg.waiting && navigator.serviceWorker.controller) {
+          promptForWorker(reg.waiting);
         }
 
-        // Detect a new worker being installed
-        registration.addEventListener("updatefound", () => {
-          const installing = registration.installing;
+        reg.addEventListener("updatefound", () => {
+          const installing = reg.installing;
           if (!installing) return;
 
           installing.addEventListener("statechange", () => {
@@ -63,29 +74,22 @@ export function ServiceWorkerRegistration() {
               installing.state === "installed" &&
               navigator.serviceWorker.controller
             ) {
-              // New content is available and an old SW is still in control
-              promptForWorker(registration.waiting ?? installing);
+              promptForWorker(reg.waiting ?? installing);
             }
           });
         });
 
-        // Check for updates every 5 minutes
-        updateInterval = setInterval(
-          () => {
-            registration.update();
-          },
-          5 * 60 * 1000,
-        );
+        updateInterval = setInterval(checkForUpdate, 5 * 60 * 1000);
       })
       .catch((error) => {
         console.error("Service Worker registration failed:", error);
       });
 
-    // Cleanup
     return () => {
       if (updateInterval) {
         clearInterval(updateInterval);
       }
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       navigator.serviceWorker.removeEventListener(
         "controllerchange",
         onControllerChange,
@@ -97,7 +101,6 @@ export function ServiceWorkerRegistration() {
   const handleReload = () => {
     setUpdateReady(false);
     if (waitingWorker) {
-      // Ask the waiting worker to activate; controllerchange triggers reload
       waitingWorker.postMessage({ type: "SKIP_WAITING" });
     } else {
       window.location.reload();

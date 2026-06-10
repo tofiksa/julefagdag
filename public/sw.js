@@ -170,7 +170,7 @@ self.addEventListener("fetch", (event) => {
 // Push notification event
 self.addEventListener("push", (event) => {
   const data = event.data ? event.data.json() : {};
-  const title = data.title || "Julefagdag";
+  const title = data.title || "Inspirasjonsdag";
   const options = {
     body: data.body || "Du har en varsel",
     icon: "/icon-192.svg",

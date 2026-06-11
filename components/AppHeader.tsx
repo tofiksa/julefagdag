@@ -22,7 +22,7 @@ export function EventTitle() {
   return (
     <div>
       <h1 className="text-base font-black leading-tight text-white sm:text-lg md:text-xl">
-        <span className="block">Inspirasjons-</span>
+        <span className="block">Inspirasj-</span>
         <span className="relative inline-block">
           <span className="line-through decoration-spk-red decoration-4">
             onsdag

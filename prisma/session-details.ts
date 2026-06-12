@@ -50,22 +50,22 @@ export const SESSION_DETAILS: Record<string, SessionDetails> = {
   "Funksjonell programmering": {
     longDescription:
     "Hva er funksjonell programmering, og hva vil det si at man faktisk programmerer funksjonelt og hvordan kan en gjøre noen ting i backend mer funksjonelt for å f.eks. teste på en enklere måte...",
-    images: ["/venue/scenen.jpg"],
+    images: ["/venue/pokalen.jpg"],
   },
   "px vs em": {
     longDescription:
     "Hva er lureste, px eller em? Og hva er forskjellen?",
-    images: ["/venue/pokalen.jpg"],
+    images: ["/venue/scenen.jpg"],
   },
   "Om svelte": {
     longDescription:
     "Hva er greia med Svelte og hvorfor bør vi bruke det?",
-    images: ["/venue/scenen.jpg"],
+    images: ["/venue/pokalen.jpg"],
   },
   "Bruke AI for å bry oss om brukeropplevelse?": {
     longDescription:
     "We are going hardcore with using AI to get developers to care about UX",
-    images: ["/venue/pokalen.jpg"],
+    images: ["/venue/scenen.jpg"],
   },
   "Koding og brukeropplevelse i AI-eraen": {
     longDescription:

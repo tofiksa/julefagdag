@@ -98,7 +98,7 @@ async function main() {
     {
       title: "Funksjonell programmering",
       speaker: "Triera Gashi",
-      room: "Scenen 2.etg (breakout)",
+      room: "Pokalen 1.etg (breakout)",
       startTime: new Date("2026-06-11T13:40:00"),
       endTime: new Date("2026-06-11T14:10:00"),
       description: "En reise inn i funksjonell programmering",
@@ -106,7 +106,7 @@ async function main() {
     {
       title: "px vs em",
       speaker: "Ingrid Fosså",
-      room: "Pokalen 1.etg (breakout)",
+      room: "Scenen 2.etg (breakout)",
       startTime: new Date("2026-06-11T13:40:00"),
       endTime: new Date("2026-06-11T14:10:00"),
       description: "Hva er lureste, px eller em? Og hva er forskjellen?",
@@ -122,7 +122,7 @@ async function main() {
     {
       title: "Om svelte",
       speaker: "Erik Andreas Klokk",
-      room: "Scenen 2.etg (breakout)",
+      room: "Pokalen 1.etg (breakout)",
       startTime: new Date("2026-06-11T14:20:00"),
       endTime: new Date("2026-06-11T14:50:00"),
       description: "Hva er greia med Svelte og hvorfor bør vi bruke det?",
@@ -130,7 +130,7 @@ async function main() {
     {
       title: "Bruke AI for å bry oss om brukeropplevelse?",
       speaker: "Simon Kavanagh",
-      room: "Pokalen 1.etg (breakout)",
+      room: "Scenen 2.etg (breakout)",
       startTime: new Date("2026-06-11T14:20:00"),
       endTime: new Date("2026-06-11T14:50:00"),
       description:
